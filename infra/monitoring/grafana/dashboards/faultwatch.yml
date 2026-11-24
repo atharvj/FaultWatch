@@ -1,0 +1,7 @@
+apiVersion: 1
+providers:
+  - name: FaultWatch
+    type: file
+    allowUiUpdates: false
+    options:
+      path: /etc/faultwatch/dashboards

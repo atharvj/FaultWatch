@@ -47,6 +47,12 @@ database URL to include PostgreSQL tests.
 FAULTWATCH_TEST_DATABASE_URL=postgresql+psycopg://faultwatch:faultwatch-local@127.0.0.1:55433/faultwatch make test
 ```
 
+## Monitoring
+
+`make observe` adds Prometheus and a provisioned [Grafana dashboard](http://127.0.0.1:3000/d/faultwatch/faultwatch-operations).
+Replay the test engines, then run `make benchmark` to exercise the metrics.
+See the [local performance measurements](docs/benchmark.md).
+
 ## Kubernetes
 
 For a local Kubernetes run, install [kind](https://kind.sigs.k8s.io/docs/user/quick-start/)

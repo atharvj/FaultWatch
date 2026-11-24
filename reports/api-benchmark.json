@@ -1,0 +1,39 @@
+{
+  "workers": 8,
+  "target_seconds": 30,
+  "elapsed_seconds": 30.027,
+  "total": {
+    "requests": 9156,
+    "errors": 0,
+    "error_rate": 0.0,
+    "requests_per_second": 304.93,
+    "p50_ms": 25.256,
+    "p95_ms": 41.439
+  },
+  "routes": {
+    "/v1/engines/{engine}/prediction": {
+      "requests": 5494,
+      "errors": 0,
+      "error_rate": 0.0,
+      "requests_per_second": 182.97,
+      "p50_ms": 28.71,
+      "p95_ms": 43.701
+    },
+    "/v1/engines/{engine}/history?limit=20": {
+      "requests": 1831,
+      "errors": 0,
+      "error_rate": 0.0,
+      "requests_per_second": 60.98,
+      "p50_ms": 20.273,
+      "p95_ms": 33.629
+    },
+    "/v1/engines": {
+      "requests": 1831,
+      "errors": 0,
+      "error_rate": 0.0,
+      "requests_per_second": 60.98,
+      "p50_ms": 19.183,
+      "p95_ms": 31.846
+    }
+  }
+}

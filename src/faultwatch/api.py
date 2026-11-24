@@ -12,6 +12,7 @@ from fastapi import FastAPI, HTTPException, Query, Request, Response
 from fastapi import Path as PathParameter
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
+from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import func, select
 from sqlalchemy.engine import Engine, URL
@@ -21,6 +22,7 @@ from faultwatch.data import OPERATING_SETTINGS, SENSORS, TELEMETRY_COLUMNS
 from faultwatch.db import DATABASE_ENV, connect_database, recent_readings, store_reading, telemetry
 from faultwatch.features import WINDOW_SIZE
 from faultwatch.inference import MODEL_VERSION, load_predictor
+from faultwatch.metrics import Metrics, RequestMetrics
 
 logger = logging.getLogger(__name__)
 MAX_KEY = 2_147_483_647
@@ -95,6 +97,14 @@ def create_app(database: str | URL | None = None, model_dir: Path | None = None)
                 app.state.database.dispose()
 
     app = FastAPI(title="FaultWatch", version="1", lifespan=lifespan)
+    metrics = Metrics()
+    app.add_middleware(RequestMetrics, metrics=metrics)
+
+    @app.get("/metrics", include_in_schema=False)
+    def prometheus() -> Response:
+        return Response(
+            generate_latest(metrics.registry), headers={"Content-Type": CONTENT_TYPE_LATEST}
+        )
 
     @app.exception_handler(RequestValidationError)
     async def invalid_request(_request: Request, error: RequestValidationError):
@@ -137,6 +147,7 @@ def create_app(database: str | URL | None = None, model_dir: Path | None = None)
     def ingest(event: TelemetryEvent, request: Request, response: Response) -> IngestResult:
         with _database(request).begin() as connection:
             outcome = store_reading(connection, **event.model_dump())
+        metrics.telemetry.labels(outcome=outcome).inc()
         if outcome == "conflict":
             raise HTTPException(409, "This engine and cycle already have different readings")
         if outcome == "duplicate":
@@ -195,7 +206,8 @@ def create_app(database: str | URL | None = None, model_dir: Path | None = None)
                 columns=TELEMETRY_COLUMNS,
             )
             try:
-                result.predicted_rul_cycles = float(predictor.predict_latest(frame).iloc[0])
+                with metrics.inference_duration.time():
+                    result.predicted_rul_cycles = float(predictor.predict_latest(frame).iloc[0])
             except ValueError as error:
                 raise HTTPException(
                     422, "Stored telemetry cannot be scored by this model"

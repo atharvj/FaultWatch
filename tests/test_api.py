@@ -104,6 +104,9 @@ def test_duplicate_delivery_and_persistence(postgres, model_bundle):
         assert {response.json()["status"] for response in responses} == {"created", "duplicate"}
         conflict = client.post("/v1/telemetry", json=payload | {"settings": [0, 0, 99]})
         assert conflict.status_code == 409
+        metrics = client.get("/metrics").text
+        for outcome in ("created", "duplicate", "conflict"):
+            assert f'faultwatch_telemetry_events_total{{outcome="{outcome}"}} 1.0' in metrics
     with TestClient(create_app(postgres, bundle)) as restarted:
         rows = restarted.get("/v1/engines/40/history").json()
         assert len(rows) == 1
@@ -144,6 +147,7 @@ def test_out_of_order_readings_require_contiguous_history(postgres, model_bundle
         )
         last = client.get("/v1/engines/2/history?limit=3").json()
         assert [row["cycle"] for row in last] == [18, 19, 20]
+        assert "faultwatch_inference_duration_seconds_count 1.0" in client.get("/metrics").text
 
 
 def test_missing_model_does_not_block_ingest(postgres, tmp_path):
@@ -155,3 +159,22 @@ def test_missing_model_does_not_block_ingest(postgres, tmp_path):
         }
         assert client.post("/v1/telemetry", json=event(engine=99)).status_code == 201
         assert client.get("/v1/engines/99/prediction").status_code == 503
+
+
+def test_metrics_use_route_templates_and_exclude_probes(without_services):
+    assert without_services.get("/v1/engines/731/history").status_code == 503
+    assert without_services.get("/missing-924").status_code == 404
+    assert without_services.get("/healthz").status_code == 200
+    response = without_services.get("/metrics")
+    assert response.status_code == 200
+    assert (
+        'faultwatch_http_requests_total{method="GET",route="/v1/engines/{engine_id}/history",status="503"} 1.0'
+        in response.text
+    )
+    assert (
+        'faultwatch_http_requests_total{method="GET",route="unmatched",status="404"} 1.0'
+        in response.text
+    )
+    assert 'route="/healthz"' not in response.text
+    assert 'route="/v1/engines/731/history"' not in response.text
+    assert 'route="/missing-924"' not in response.text
