@@ -1,0 +1,51 @@
+x-app: &app
+  image: faultwatch:local
+  pull_policy: never
+  environment:
+    FAULTWATCH_DATABASE_URL: postgresql+psycopg://faultwatch:faultwatch-local@db:5432/faultwatch
+    FAULTWATCH_MODEL_DIR: /models
+
+services:
+  db:
+    image: postgres:17.12-alpine
+    environment:
+      POSTGRES_USER: faultwatch
+      POSTGRES_PASSWORD: faultwatch-local
+      POSTGRES_DB: faultwatch
+    ports:
+      - "127.0.0.1:${FAULTWATCH_DB_PORT:-55433}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-U", "faultwatch", "-d", "faultwatch"]
+      interval: 3s
+      timeout: 3s
+      retries: 15
+
+  migrate:
+    <<: *app
+    command: ["alembic", "upgrade", "head"]
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      disable: true
+
+  api:
+    <<: *app
+    build: .
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1:${FAULTWATCH_PORT:-8000}:8000"
+    volumes:
+      - type: bind
+        source: ${FAULTWATCH_MODEL_DIR:-./artifacts/fd001-v1}
+        target: /models
+        read_only: true
+        bind:
+          create_host_path: false
+
+volumes:
+  pgdata:

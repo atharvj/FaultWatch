@@ -176,6 +176,8 @@ def train_and_evaluate(directory: Path, output: Path) -> dict:
             }
             (bundle / "metrics.json").write_text(json.dumps(metrics, indent=2) + "\n")
             (bundle / "splits.json").write_text(json.dumps(splits, indent=2) + "\n")
+            # Inference containers read the published bundle as a nonroot user.
+            bundle.chmod(0o755)
             bundle.rename(output)
 
     return metrics

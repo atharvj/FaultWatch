@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      FAULTWATCH_TEST_DATABASE_URL: postgresql+psycopg://faultwatch:faultwatch-local@127.0.0.1:55433/faultwatch
+      FAULTWATCH_COMPOSE_SMOKE: "1"
+      LOKY_MAX_CPU_COUNT: "2"
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
+        with:
+          version: "0.11.24"
+          enable-cache: false
+      - run: make setup
+      - run: docker compose up --wait db
+      - run: make test
+      - if: always()
+        run: docker compose down --volumes

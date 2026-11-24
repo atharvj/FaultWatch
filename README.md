@@ -22,37 +22,30 @@ models or `uv run --locked pytest -q` to run the tests.
 
 ## Live dashboard
 
-With the model trained, start PostgreSQL and the API. The container uses a
-localhost port and a named volume. The password below is for this local demo.
+With Docker running and the model trained, launch the stack and replay test
+engines 1–3.
 
 ```sh
-docker run -d --name faultwatch-postgres \
-  -p 127.0.0.1:55432:5432 -v faultwatch-pgdata:/var/lib/postgresql/data \
-  -e POSTGRES_USER=faultwatch -e POSTGRES_DB=faultwatch \
-  -e POSTGRES_PASSWORD=faultwatch-local postgres:17.12-alpine
-export FAULTWATCH_DATABASE_URL=postgresql+psycopg://faultwatch:faultwatch-local@127.0.0.1:55432/faultwatch
-uv run --locked alembic upgrade head
-uv run --locked faultwatch serve
-```
-
-If the container already exists, use `docker start faultwatch-postgres`.
-Open <http://127.0.0.1:8000> and run this in a second terminal.
-
-```sh
-uv run --locked faultwatch replay
+make demo
+make replay
 curl -fsS http://127.0.0.1:8000/v1/engines/1/prediction
-curl -fsS 'http://127.0.0.1:8000/v1/engines/1/history?limit=20'
 ```
 
-Replay sends FD001 test engines 1–3 in cycle order. Use `--engine` to select
-engines and `--rate` to set events per second. `POST /v1/telemetry` returns
-`201` for new readings, `200` for identical retries and `409` for conflicting
-readings at an existing engine and cycle. Prediction requires 20 consecutive
-cycles. The API schema is at [/docs](http://127.0.0.1:8000/docs).
+Open the [dashboard](http://127.0.0.1:8000) or [API docs](http://127.0.0.1:8000/docs).
+Compose runs migrations before starting the API. `make stop` stops the stack
+and keeps the database volume.
 
-To include PostgreSQL integration tests, run
-`FAULTWATCH_TEST_DATABASE_URL="$FAULTWATCH_DATABASE_URL" uv run --locked pytest -q`.
-The tests use a temporary schema.
+Replay accepts `--engine` and `--rate` through `faultwatch replay`.
+`POST /v1/telemetry` returns `201` for new readings, `200` for identical retries
+and `409` if the same engine and cycle already has different readings.
+Predictions require 20 consecutive cycles.
+
+Run `make test` for lint and pytest. With Compose running, set the local
+database URL to include PostgreSQL tests.
+
+```sh
+FAULTWATCH_TEST_DATABASE_URL=postgresql+psycopg://faultwatch:faultwatch-local@127.0.0.1:55433/faultwatch make test
+```
 
 ## Results
 
