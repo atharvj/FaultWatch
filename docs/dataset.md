@@ -1,8 +1,9 @@
 # NASA C-MAPSS FD001
 
-FaultWatch uses the 2008 Turbofan Engine Degradation Simulation Data Set from
-the NASA Ames Prognostics Center of Excellence. FD001 simulates one operating
-condition (sea level) and one high-pressure compressor degradation mode.
+FaultWatch uses NASA C-MAPSS FD001, a subset of the 2008 Turbofan Engine
+Degradation Simulation Data Set from the NASA Ames Prognostics Center of
+Excellence. FD001 simulates one operating condition (sea level) and one
+high-pressure compressor degradation mode.
 NASA publishes the dataset through its [PCoE repository, dataset 6](https://www.nasa.gov/intelligent-systems-division/discovery-and-systems-health/pcoe/pcoe-data-set-repository/)
 and [NASA Open Data catalog](https://data.nasa.gov/dataset/cmapss-jet-engine-simulated-data).
 

@@ -93,3 +93,11 @@ features for 18,731 train and 11,196 test rows in 10.33 seconds. Four Parquet
 files across two split partitions took 3,934,010 bytes. The largest feature
 error against pandas was 5.46e-12. Only the training partition contains the
 true remaining-life label. [Round-trip results](../reports/spark-parquet.json)
+
+## Documentation retrieval and Q&A
+
+On a small fixed check of five questions with answers in the public
+documentation, pgvector retrieved the expected source in the top three
+for all five. FLAN-T5 returned five correct answers with citations and
+abstained on both unrelated questions. This checks the local workflow
+on seven examples. [Questions and results](../reports/rag-evaluation.json)

@@ -1,0 +1,119 @@
+{
+  "pgvector_version": "0.8.2",
+  "indexed_passages": 44,
+  "models": {
+    "embedding": [
+      "sentence-transformers/all-MiniLM-L6-v2",
+      "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
+    ],
+    "generator": [
+      "google/flan-t5-small",
+      "0fc9ddf78a1e988dac52e2dac162b0ede4fd74ab"
+    ]
+  },
+  "min_similarity": 0.27,
+  "answerable": 5,
+  "retrieval_hits_at_3": 5,
+  "correct_answers": 5,
+  "abstained": 2,
+  "unanswerable": 2,
+  "elapsed_seconds": 2.372,
+  "cases": [
+    {
+      "question": "Which dataset is this project using?",
+      "expected_source": "docs/dataset.md",
+      "retrieved_source": true,
+      "correct": true,
+      "answer": "NASA C-MAPSS FD001, a subset of the 2008 Turbofan Engine Degradation Simulation Data Set from the NASA Ames Prognostics",
+      "source": "docs/dataset.md",
+      "evidence": "FaultWatch uses NASA C-MAPSS FD001, a subset of the 2008 Turbofan Engine Degradation Simulation Data Set from the NASA Ames Prognostics Center of Excellence. FD001 simulates one operating condition (sea level) and one high-pressure compressor degradation mode. NASA publishes the dataset through its PCoE repository, dataset 6 and NASA Open Data catalog.",
+      "retrieved": [
+        "docs/dataset.md",
+        "docs/dataset.md",
+        "docs/dataset.md"
+      ]
+    },
+    {
+      "question": "How many consecutive readings does inference require?",
+      "expected_source": "docs/model_card.md",
+      "retrieved_source": true,
+      "correct": true,
+      "answer": "20",
+      "source": "docs/model_card.md",
+      "evidence": "Inference requires 20 consecutive sensor readings for the same engine. The default model is the PyTorch MLP. It returns a nonnegative point estimate.",
+      "retrieved": [
+        "docs/model_card.md",
+        "README.md",
+        "docs/benchmark.md"
+      ]
+    },
+    {
+      "question": "What operating condition does FD001 simulate?",
+      "expected_source": "docs/dataset.md",
+      "retrieved_source": true,
+      "correct": true,
+      "answer": "one operating condition (sea level) and one high-pressure compressor degradation mode",
+      "source": "docs/dataset.md",
+      "evidence": "FaultWatch uses NASA C-MAPSS FD001, a subset of the 2008 Turbofan Engine Degradation Simulation Data Set from the NASA Ames Prognostics Center of Excellence. FD001 simulates one operating condition (sea level) and one high-pressure compressor degradation mode. NASA publishes the dataset through its PCoE repository, dataset 6 and NASA Open Data catalog.",
+      "retrieved": [
+        "docs/model_card.md",
+        "docs/dataset.md",
+        "docs/model_card.md"
+      ]
+    },
+    {
+      "question": "Which model is the default for inference?",
+      "expected_source": "docs/model_card.md",
+      "retrieved_source": true,
+      "correct": true,
+      "answer": "PyTorch MLP",
+      "source": "docs/model_card.md",
+      "evidence": "Inference requires 20 consecutive sensor readings for the same engine. The default model is the PyTorch MLP. It returns a nonnegative point estimate.",
+      "retrieved": [
+        "docs/model_card.md",
+        "docs/model_card.md",
+        "README.md"
+      ]
+    },
+    {
+      "question": "After how much time do Redis entries expire?",
+      "expected_source": "docs/benchmark.md",
+      "retrieved_source": true,
+      "correct": true,
+      "answer": "two minutes",
+      "source": "docs/benchmark.md",
+      "evidence": "make cache enables the optional Redis service and the cache panel in Grafana. PostgreSQL supplies the current 20-cycle window on every prediction request. Redis keys include the model artifact checksum and the exact ordered readings. New telemetry gets a different key and older entries expire after two minutes. A hit skips feature extraction and inference. Redis errors fall back to direct scoring. Incomplete windows return insufficient history.",
+      "retrieved": [
+        "docs/benchmark.md",
+        "docs/benchmark.md",
+        "README.md"
+      ]
+    },
+    {
+      "question": "What is the population of Japan?",
+      "expected_source": null,
+      "retrieved_source": false,
+      "correct": true,
+      "answer": null,
+      "source": null,
+      "retrieved": [
+        "docs/benchmark.md",
+        "docs/dataset.md",
+        "docs/model_card.md"
+      ]
+    },
+    {
+      "question": "How can I renew an expired passport?",
+      "expected_source": null,
+      "retrieved_source": false,
+      "correct": true,
+      "answer": null,
+      "source": null,
+      "retrieved": [
+        "README.md",
+        "README.md",
+        "README.md"
+      ]
+    }
+  ]
+}

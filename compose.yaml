@@ -91,6 +91,23 @@ services:
     volumes:
       - kafka:/var/lib/kafka/data
 
+  rag-db:
+    image: pgvector/pgvector:0.8.2-pg17
+    profiles: [rag]
+    environment:
+      POSTGRES_USER: faultwatch
+      POSTGRES_PASSWORD: faultwatch-local
+      POSTGRES_DB: faultwatch_rag
+    ports:
+      - "127.0.0.1:55435:5432"
+    volumes:
+      - rag-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-U", "faultwatch", "-d", "faultwatch_rag"]
+      interval: 3s
+      timeout: 3s
+      retries: 15
+
   prometheus:
     image: prom/prometheus:v3.16.0
     profiles: [monitoring]
@@ -130,3 +147,4 @@ volumes:
   pgdata:
   prometheus:
   kafka:
+  rag-data:

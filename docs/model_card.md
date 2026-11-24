@@ -24,10 +24,12 @@ scores, versions and training parameters are in the
 [split manifest](../reports/fd001-v1.splits.json) records the engine IDs and
 validation cutoffs.
 
+Inference requires 20 consecutive sensor readings for the same engine. The
+default model is the PyTorch MLP. It returns a nonnegative point estimate.
+
 The local bundle in `artifacts/fd001-v1` stores the feature schema and model
 checksums. The scikit-learn pipelines use skops. The MLP stores weights and
-scaler arrays in a NumPy archive loaded with pickle disabled. Inference
-requires 20 consecutive readings and returns a nonnegative point estimate.
+scaler arrays in a NumPy archive loaded with pickle disabled.
 
 FD001 covers one simulated compressor degradation mode. The results are
 specific to this benchmark. The model has no calibrated uncertainty and is

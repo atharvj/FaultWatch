@@ -120,6 +120,23 @@ train and test Parquet partitions to `artifacts/fd001-parquet`. The job
 reads them back and checks every feature against the pandas pipeline.
 [Verification results](reports/spark-parquet.json)
 
+## Ask the documentation
+
+The local Q&A tool retrieves public project passages from PostgreSQL with
+pgvector. It generates a short answer with MiniLM embeddings and FLAN-T5,
+and returns the source passage or abstains.
+
+```sh
+docker compose --profile rag up --wait rag-db
+HF_HUB_DISABLE_XET=1 HF_HUB_DISABLE_TELEMETRY=1 uv run --locked --group rag python scripts/rag.py fetch
+uv run --locked --group rag python scripts/rag.py index
+uv run --locked --group rag python scripts/rag.py ask 'How many consecutive readings does inference require?'
+uv run --locked --group rag python scripts/rag.py evaluate
+```
+
+The one-time fetch downloads public model weights. Indexing and questions
+run locally. [Evaluation results](reports/rag-evaluation.json)
+
 ## Results
 
 One prediction per engine on 100 held-out NASA test trajectories. Errors are

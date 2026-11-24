@@ -21,7 +21,7 @@ test:
 	uv run --locked pytest -q
 
 stop:
-	docker compose --profile monitoring --profile cache --profile kafka down
+	docker compose --profile monitoring --profile cache --profile kafka --profile rag down
 
 KIND ?= kind
 KUBECTL = kubectl --kubeconfig .local/kubeconfig --context kind-faultwatch --namespace faultwatch
