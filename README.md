@@ -1,11 +1,35 @@
 # FaultWatch
 
+[![CI](https://github.com/atharvj/FaultWatch/actions/workflows/ci.yml/badge.svg)](https://github.com/atharvj/FaultWatch/actions/workflows/ci.yml)
+
 FaultWatch estimates how many cycles a turbofan engine has left from its latest
 20 cycles of sensor data. It trains and runs locally on NASA's C-MAPSS FD001
 simulation dataset. Replay streams held-out telemetry to a local API and
 dashboard, with PostgreSQL storing one reading per engine and cycle.
 
+[Watch the 44-second demo](docs/demo.mp4) to see sensor readings arrive,
+predictions update, and Grafana track the running service.
+
 ![Remaining-life prediction and sensor history in the FaultWatch dashboard](docs/dashboard.png)
+
+## Architecture
+
+```mermaid
+flowchart TD
+    Data["NASA C-MAPSS FD001"] --> Replay["Telemetry replay"]
+    Data --> Train["Train and export the model"]
+    Train --> Inference["20-cycle features and model scoring"]
+    Replay -->|HTTP ingest| API["FastAPI"]
+    Replay -.-> Kafka["Kafka"]
+    Kafka --> Consumer["Replay consumer"]
+    Consumer -->|Store readings| DB[("PostgreSQL")]
+    API <-->|Store and query readings| DB
+    Dashboard["Browser dashboard"] <-->|History and predictions| API
+    API --> Inference
+    API -.-> Cache[("Redis")]
+    API -->|"/metrics"| Prometheus
+    Prometheus --> Grafana
+```
 
 ## Run it
 
@@ -48,6 +72,9 @@ database URL to include PostgreSQL tests.
 ```sh
 FAULTWATCH_TEST_DATABASE_URL=postgresql+psycopg://faultwatch:faultwatch-local@127.0.0.1:55433/faultwatch make test
 ```
+
+GitHub Actions also checks Kafka consumer restart and replay, Spark Parquet
+parity, the Terraform loopback guard, and Helm install and upgrade on kind.
 
 ## Monitoring
 
