@@ -1,67 +1,34 @@
-# Model card · FD001 v1
+# FD001 model and evaluation
 
-## Intended use
+FaultWatch predicts uncapped remaining useful life in cycles. The model uses
+the current cycle number and each of 21 sensors' last value, mean and change
+over a trailing 20-cycle window. Engine IDs group readings. FD001 covers one
+operating condition, so the model drops the three operating settings.
 
-Estimate remaining useful life (RUL) in cycles for simulated C-MAPSS FD001
-engines with 20 consecutive observations. The validation-selected model is a
-PyTorch MLP. The [dataset description](dataset.md) records the archive,
-checksums and schema.
+Training labels are the last cycle of each complete trajectory minus the
+current cycle. The median baseline uses the median label over training
+windows. Histogram gradient boosting and a PyTorch MLP with 64 and 32 hidden units
+use the same inputs. The MLP fits a standard scaler on each fitting fold and trains with
+AdamW and Smooth L1 loss.
 
-## Features and training
+Model selection used three engine-grouped folds across the 100 NASA training
+engines, with seed 27. Each validation engine was scored at 40%, 60%, and 80%
+of its lifespan. Features only use readings through each cutoff. The MLP had
+the lowest pooled MAE over the 300 validation cutoffs (23.28 cycles), so it is
+the default. The candidates were refit on 18,731 windows, then scored once per
+engine at the 100 official test endpoints.
 
-- Each window ends at the cycle being scored. Inputs are that cycle number and
-  the last value, mean and first-to-last change for each of 21 sensor channels.
-  Engine ID only groups observations. FD001 has one operating condition, so
-  the model omits the three operating settings.
-- Training targets are uncapped cycles to the last row of the engine's
-  run-to-failure trajectory. Training and validation use the same feature
-  extraction as inference. Fewer than 20 consecutive cycles gives
-  insufficient history. Predictions have a lower bound of zero cycles.
-- The median baseline predicts the median RUL of the fitting windows.
-  The scikit-learn model fits histogram gradient boosting on the same features.
-  The MLP uses 64 and 32 hidden units, ReLU, AdamW and a Smooth L1 loss. It fits
-  its `StandardScaler` on the fitting fold and scales targets by 100 cycles
-  during training. Neither tree nor neural training consumes validation rows.
-- Three shuffled `GroupKFold` folds with seed 27 split the 100 official training
-  engines. Each validation engine contributes three simulated endpoints at
-  40%, 60% and 80% of its trajectory. The percentages use the complete training
-  lifespan to construct the evaluation cases. Features at each cutoff use
-  telemetry only through that cycle.
-- The lowest pooled validation MAE determines selection. All candidates are
-  refit on all 18,731 eligible training windows, then scored on the 100
-  official test engines. Each test engine contributes its last observed
-  cycle, joined to the NASA RUL vector by engine ID.
+The evaluation ran on an Apple M2 Pro CPU with two threads. Full-precision
+scores, versions and training parameters are in the
+[metrics file](../reports/fd001-v1.metrics.json). The
+[split manifest](../reports/fd001-v1.splits.json) records the engine IDs and
+validation cutoffs.
 
-## Measured results
+The local bundle in `artifacts/fd001-v1` stores the feature schema and model
+checksums. The scikit-learn pipelines use skops. The MLP stores weights and
+scaler arrays in a NumPy archive loaded with pickle disabled. Inference
+requires 20 consecutive readings and returns a nonnegative point estimate.
 
-All error values are in cycles. MAE is the mean absolute error. RMSE takes
-the square root of the mean squared error and penalizes large misses more.
-
-| Model | Grouped validation MAE (300 cutoffs) | Grouped validation RMSE | Official test MAE (100 endpoints) | Official test RMSE |
-|---|---:|---:|---:|---:|
-| Median baseline | 34.15 | 40.72 | 36.32 | 45.08 |
-| Histogram gradient boosting | 24.64 | 33.93 | **18.28** | **24.77** |
-| PyTorch MLP (selected) | **23.28** | **31.08** | 19.35 | 25.76 |
-
-The selected MLP improved official test MAE by 46.7% relative to the median
-baseline. Boosted trees had the lowest official test errors. The MLP remains
-the default because its selection preceded official test evaluation.
-
-Run on 2026-11-23 with CPython 3.11.12 on an Apple M2 Pro, native arm64 CPU
-with two training threads. Full-precision [metrics](../reports/fd001-v1.metrics.json)
-and [split manifest](../reports/fd001-v1.splits.json) are committed.
-
-## Artifact and limits
-
-The local bundle contains the versioned feature schema, artifact hashes and all
-three estimators. scikit-learn estimators use skops with a fixed allowlist for
-the histogram tree class. The MLP uses a NumPy archive with numeric weights and
-scaler arrays loaded with pickle disabled. Training checks that all restored
-estimators reproduce predictions from their in-memory versions on the 100
-official endpoints. Use bundles generated locally with the locked dependencies.
-
-FD001 is simulated and covers one operating condition and one fault mode.
-The official endpoint metrics describe this benchmark and can vary with engine
-lifespan and where telemetry ends. Nearby validation cutoffs for an engine
-are correlated. This model provides point estimates with no calibrated
-uncertainty and is unsuitable for aircraft maintenance decisions.
+FD001 covers one simulated compressor degradation mode. The results are
+specific to this benchmark. The model has no calibrated uncertainty and is
+unsuitable for aircraft maintenance decisions.
