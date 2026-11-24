@@ -77,6 +77,16 @@ were verified through the AWS SDK. Two artifacts were restored with
 matching checksums and the bucket count returned to zero after destroy.
 [Lab result](../reports/s3-lab.json)
 
+## Live AWS S3 round trip
+
+Terraform created one private bucket in `us-west-1` and set all four
+public-access blocks and AES256 default encryption. The AWS SDK uploaded
+and restored two artifacts totaling 28,228 bytes, verified both checksums,
+and loaded the restored model. The test used a 15-minute session scoped to
+that bucket and those two keys. Terraform destroyed all three resources.
+AWS confirmed the bucket and temporary identity were gone and the account
+was on the Free plan before and after the test. [Live result](../reports/aws-s3-live.json)
+
 ## Kafka replay correctness
 
 The KRaft broker accepted 80 real FD001 messages. A consumer stopped after

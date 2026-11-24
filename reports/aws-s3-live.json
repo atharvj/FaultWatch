@@ -1,0 +1,30 @@
+{
+  "service": "Amazon S3",
+  "region": "us-west-1",
+  "terraform": "1.17.2",
+  "aws_provider": "5.100.0",
+  "aws_sdk": "1.44.10",
+  "created_resources": [
+    "aws_s3_bucket",
+    "aws_s3_bucket_public_access_block",
+    "aws_s3_bucket_server_side_encryption_configuration"
+  ],
+  "public_access_block": {
+    "BlockPublicAcls": true,
+    "IgnorePublicAcls": true,
+    "BlockPublicPolicy": true,
+    "RestrictPublicBuckets": true
+  },
+  "encryption": "AES256",
+  "objects_transferred": 2,
+  "model": "torch_mlp",
+  "manifest_and_model_checksums_verified": true,
+  "restored_model_loaded": true,
+  "credential_duration_seconds": 900,
+  "terraform_destroy_verified": true,
+  "test_bucket_remaining": false,
+  "temporary_iam_access_removed": true,
+  "free_plan_verified_before_and_after": true,
+  "artifact_bytes": 28228,
+  "terraform_resources_destroyed": 3
+}

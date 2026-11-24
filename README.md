@@ -132,7 +132,9 @@ uv run --locked --group aws python scripts/s3_lab.py
 
 Use Terraform 1.17 and a trained bundle. The lab uses Moto, fixed local
 credentials, and a loopback-only endpoint. See the [apply and teardown results](reports/s3-lab.json).
-A live AWS deployment requires an eligible account and separate approval.
+The [AWS S3 module](infra/terraform/aws-s3) was also applied against a live
+Free-plan account. It restored the two artifacts with matching checksums,
+then removed the bucket and temporary access. [Live test results](reports/aws-s3-live.json)
 
 ## Kafka replay
 

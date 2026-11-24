@@ -93,13 +93,16 @@ jobs:
           mkdir terraform-bin
           unzip -q terraform.zip terraform -d terraform-bin
           echo "$RUNNER_TEMP/terraform-bin" >> "$GITHUB_PATH"
-      - name: Validate the module and test the endpoint guard
-        working-directory: infra/terraform/s3
+      - name: Validate the S3 modules and run mocked plans
         run: |
-          terraform fmt -check -recursive
-          terraform init -input=false -backend=false -lockfile=readonly
-          terraform validate -no-color
-          terraform test -no-color
+          export TF_PLUGIN_CACHE_DIR="$RUNNER_TEMP/terraform-providers"
+          mkdir -p "$TF_PLUGIN_CACHE_DIR"
+          for module in infra/terraform/s3 infra/terraform/aws-s3; do
+            terraform -chdir="$module" fmt -check -recursive
+            terraform -chdir="$module" init -input=false -backend=false -lockfile=readonly
+            terraform -chdir="$module" validate -no-color
+            terraform -chdir="$module" test -no-color
+          done
 
   helm:
     name: Helm lifecycle on kind
