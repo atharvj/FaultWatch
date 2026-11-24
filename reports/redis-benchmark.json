@@ -1,0 +1,169 @@
+{
+  "date": "2026-11-24",
+  "host": "Apple M2 Pro, 16 GB RAM, Docker Desktop linux/arm64",
+  "redis_version": "8.12.0",
+  "stored_readings": 206,
+  "prediction_engine_count": 3,
+  "runs": [
+    {
+      "redis_enabled": false,
+      "workers": 8,
+      "target_seconds": 30,
+      "elapsed_seconds": 30.012,
+      "total": {
+        "requests": 8593,
+        "errors": 0,
+        "error_rate": 0.0,
+        "requests_per_second": 286.31,
+        "p50_ms": 26.554,
+        "p95_ms": 45.148
+      },
+      "routes": {
+        "/v1/engines/{engine}/prediction": {
+          "requests": 5155,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 171.76,
+          "p50_ms": 30.539,
+          "p95_ms": 48.776
+        },
+        "/v1/engines/{engine}/history?limit=20": {
+          "requests": 1719,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 57.28,
+          "p50_ms": 20.786,
+          "p95_ms": 35.662
+        },
+        "/v1/engines": {
+          "requests": 1719,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 57.28,
+          "p50_ms": 20.011,
+          "p95_ms": 35.174
+        }
+      }
+    },
+    {
+      "redis_enabled": true,
+      "workers": 8,
+      "target_seconds": 30,
+      "elapsed_seconds": 30.014,
+      "total": {
+        "requests": 16077,
+        "errors": 0,
+        "error_rate": 0.0,
+        "requests_per_second": 535.66,
+        "p50_ms": 13.528,
+        "p95_ms": 25.52
+      },
+      "routes": {
+        "/v1/engines/{engine}/prediction": {
+          "requests": 9646,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 321.39,
+          "p50_ms": 14.007,
+          "p95_ms": 26.094
+        },
+        "/v1/engines/{engine}/history?limit=20": {
+          "requests": 3217,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 107.18,
+          "p50_ms": 13.077,
+          "p95_ms": 25.133
+        },
+        "/v1/engines": {
+          "requests": 3214,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 107.08,
+          "p50_ms": 12.544,
+          "p95_ms": 24.413
+        }
+      }
+    },
+    {
+      "redis_enabled": true,
+      "workers": 8,
+      "target_seconds": 30,
+      "elapsed_seconds": 30.013,
+      "total": {
+        "requests": 16715,
+        "errors": 0,
+        "error_rate": 0.0,
+        "requests_per_second": 556.93,
+        "p50_ms": 13.243,
+        "p95_ms": 24.039
+      },
+      "routes": {
+        "/v1/engines/{engine}/prediction": {
+          "requests": 10029,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 334.16,
+          "p50_ms": 13.705,
+          "p95_ms": 24.631
+        },
+        "/v1/engines/{engine}/history?limit=20": {
+          "requests": 3344,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 111.42,
+          "p50_ms": 12.77,
+          "p95_ms": 23.153
+        },
+        "/v1/engines": {
+          "requests": 3342,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 111.35,
+          "p50_ms": 12.253,
+          "p95_ms": 22.904
+        }
+      }
+    },
+    {
+      "redis_enabled": false,
+      "workers": 8,
+      "target_seconds": 30,
+      "elapsed_seconds": 30.021,
+      "total": {
+        "requests": 8689,
+        "errors": 0,
+        "error_rate": 0.0,
+        "requests_per_second": 289.43,
+        "p50_ms": 26.303,
+        "p95_ms": 43.942
+      },
+      "routes": {
+        "/v1/engines/{engine}/prediction": {
+          "requests": 5213,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 173.64,
+          "p50_ms": 30.196,
+          "p95_ms": 46.577
+        },
+        "/v1/engines/{engine}/history?limit=20": {
+          "requests": 1738,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 57.89,
+          "p50_ms": 21.052,
+          "p95_ms": 35.4
+        },
+        "/v1/engines": {
+          "requests": 1738,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 57.89,
+          "p50_ms": 20.205,
+          "p95_ms": 34.118
+        }
+      }
+    }
+  ]
+}

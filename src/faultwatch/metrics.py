@@ -38,6 +38,14 @@ class Metrics:
             ("outcome",),
             registry=self.registry,
         )
+        self.cache = Counter(
+            "faultwatch_prediction_cache_requests",
+            "Redis prediction lookups by outcome.",
+            ("outcome",),
+            registry=self.registry,
+        )
+        for outcome in ("hit", "miss", "error"):
+            self.cache.labels(outcome=outcome)
         for outcome in ("created", "duplicate", "conflict"):
             self.telemetry.labels(outcome=outcome)
 

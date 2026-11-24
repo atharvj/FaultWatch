@@ -128,6 +128,7 @@ class Predictor:
     model: Regressor
     model_name: str
     model_version: str
+    artifact_sha256: str
 
     def predict_latest(self, telemetry: pd.DataFrame) -> pd.Series:
         features = causal_features(telemetry, latest_only=True)
@@ -139,4 +140,9 @@ def load_predictor(directory: Path) -> Predictor:
     """Load the validation-selected model from a locally generated artifact bundle."""
     manifest = load_manifest(directory)
     name = manifest["selected_model"]
-    return Predictor(load_model(directory, name, manifest), name, manifest["model_version"])
+    return Predictor(
+        load_model(directory, name, manifest),
+        name,
+        manifest["model_version"],
+        manifest["artifact_sha256"][name],
+    )

@@ -18,6 +18,7 @@ from sqlalchemy import func, select
 from sqlalchemy.engine import Engine, URL
 from sqlalchemy.exc import SQLAlchemyError
 
+from faultwatch.cache import CACHE_ENV, PredictionCache, prediction_key
 from faultwatch.data import OPERATING_SETTINGS, SENSORS, TELEMETRY_COLUMNS
 from faultwatch.db import DATABASE_ENV, connect_database, recent_readings, store_reading, telemetry
 from faultwatch.features import WINDOW_SIZE
@@ -76,8 +77,11 @@ def _database(request: Request) -> Engine:
     return engine
 
 
-def create_app(database: str | URL | None = None, model_dir: Path | None = None) -> FastAPI:
+def create_app(
+    database: str | URL | None = None, model_dir: Path | None = None, cache_url: str | None = None
+) -> FastAPI:
     database = database or os.getenv(DATABASE_ENV)
+    cache_url = cache_url or os.getenv(CACHE_ENV)
     model_dir = (
         model_dir if model_dir is not None else Path(os.getenv(MODEL_ENV, DEFAULT_MODEL_DIR))
     )
@@ -90,11 +94,21 @@ def create_app(database: str | URL | None = None, model_dir: Path | None = None)
         except (OSError, ValueError) as error:
             logger.warning("Model bundle unavailable: %s", error)
             app.state.predictor = None
+        app.state.cache = None
+        if cache_url:
+            try:
+                app.state.cache = PredictionCache(cache_url, metrics.cache)
+            except ValueError:
+                logger.warning(
+                    "Redis cache URL is invalid. Predictions will use the model directly."
+                )
         try:
             yield
         finally:
             if app.state.database is not None:
                 app.state.database.dispose()
+            if app.state.cache is not None:
+                app.state.cache.close()
 
     app = FastAPI(title="FaultWatch", version="1", lifespan=lifespan)
     metrics = Metrics()
@@ -200,19 +214,27 @@ def create_app(database: str | URL | None = None, model_dir: Path | None = None)
             available_cycles=consecutive,
             model_version=predictor.model_version,
         )
-        if consecutive == WINDOW_SIZE:
+        if consecutive < WINDOW_SIZE:
+            return result
+
+        def score() -> float:
             frame = pd.DataFrame(
                 [(engine_id, row["cycle"], *row["settings"], *row["sensors"]) for row in rows],
                 columns=TELEMETRY_COLUMNS,
             )
-            try:
-                with metrics.inference_duration.time():
-                    result.predicted_rul_cycles = float(predictor.predict_latest(frame).iloc[0])
-            except ValueError as error:
-                raise HTTPException(
-                    422, "Stored telemetry cannot be scored by this model"
-                ) from error
-            result.status = "ready"
+            with metrics.inference_duration.time():
+                return float(predictor.predict_latest(frame).iloc[0])
+
+        cache = request.app.state.cache
+        try:
+            if cache is None:
+                result.predicted_rul_cycles = score()
+            else:
+                key = prediction_key(predictor.model_version, predictor.artifact_sha256, rows)
+                result.predicted_rul_cycles = cache.get_or_score(key, score)
+        except ValueError as error:
+            raise HTTPException(422, "Stored telemetry cannot be scored by this model") from error
+        result.status = "ready"
         return result
 
     return app

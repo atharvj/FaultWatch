@@ -12,6 +12,7 @@ dependencies = [
     "prometheus-client>=0.22,<1",
     "psycopg[binary]>=3.2,<4",
     "pydantic>=2.11,<3",
+    "redis>=8,<9",
     "scikit-learn>=1.7,<1.10",
     "skops>=0.13,<0.17",
     "sqlalchemy>=2.0,<2.1",

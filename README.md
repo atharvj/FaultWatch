@@ -53,6 +53,7 @@ FAULTWATCH_TEST_DATABASE_URL=postgresql+psycopg://faultwatch:faultwatch-local@12
 
 `make observe` adds Prometheus and a provisioned [Grafana dashboard](http://127.0.0.1:3000/d/faultwatch/faultwatch-operations).
 Replay the test engines, then run `make benchmark` to exercise the metrics.
+`make cache` enables Redis for repeated predictions.
 See the [local performance measurements](docs/benchmark.md).
 
 ## Kubernetes

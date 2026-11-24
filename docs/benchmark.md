@@ -42,3 +42,29 @@ M2 Pro. Each batch size and runtime used 30 warmup calls and 300 timed calls.
 
 See the [ONNX benchmark JSON](../reports/onnx-benchmark.json) for versions,
 tolerances, and the graph checksum.
+
+## Redis cache
+
+`make cache` enables the optional Redis service and the cache panel in Grafana.
+PostgreSQL supplies the current 20-cycle window on every prediction request.
+Redis keys include the model artifact checksum and the exact ordered readings.
+New telemetry gets a different key and older entries expire after two minutes.
+A hit skips feature extraction and inference. Redis errors fall back to direct
+scoring. Incomplete windows return insufficient history.
+
+The same 30-second workload ran four times on the M2 Pro in off/on/on/off
+order. Both settings used the same Compose image, 206 readings, eight
+clients and three warm prediction windows. The Redis container was running
+for every trial. Preflight filled entries before the timed cached runs.
+
+| Trial | Redis | All requests/s | Prediction p95 (ms) | Failures |
+|---|---|---:|---:|---:|
+| 1 | Off | 286.31 | 48.78 | 0 |
+| 2 | On | 535.66 | 26.09 | 0 |
+| 3 | On | 556.93 | 24.63 | 0 |
+| 4 | Off | 289.43 | 46.58 | 0 |
+
+The mean of the two trial p95s fell 46.8%, from 47.68 to 25.36 ms. This
+workload repeatedly reads the same three engines. Cache tests cover expiry,
+invalid entries, a new cycle, gap backfill and a stopped Redis container.
+[Full trial results](../reports/redis-benchmark.json)

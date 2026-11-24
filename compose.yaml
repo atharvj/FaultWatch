@@ -1,7 +1,7 @@
 x-app: &app
   image: faultwatch:local
   pull_policy: never
-  environment:
+  environment: &app-env
     FAULTWATCH_DATABASE_URL: postgresql+psycopg://faultwatch:faultwatch-local@db:5432/faultwatch
     FAULTWATCH_MODEL_DIR: /models
 
@@ -34,6 +34,9 @@ services:
   api:
     <<: *app
     build: .
+    environment:
+      <<: *app-env
+      FAULTWATCH_REDIS_URL: ${FAULTWATCH_REDIS_URL:-}
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -46,6 +49,16 @@ services:
         read_only: true
         bind:
           create_host_path: false
+
+  redis:
+    image: redis:8.12.0-alpine
+    profiles: [cache]
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "32mb", "--maxmemory-policy", "allkeys-lru"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 2s
+      retries: 10
 
   prometheus:
     image: prom/prometheus:v3.16.0

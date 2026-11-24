@@ -21,7 +21,7 @@ test:
 	uv run --locked pytest -q
 
 stop:
-	docker compose --profile monitoring down
+	docker compose --profile monitoring --profile cache down
 
 KIND ?= kind
 KUBECTL = kubectl --kubeconfig .local/kubeconfig --context kind-faultwatch --namespace faultwatch
@@ -37,10 +37,13 @@ kind-forward:
 kind-down:
 	$(KIND) delete cluster --name faultwatch --kubeconfig .local/kubeconfig
 
-.PHONY: observe benchmark
+.PHONY: observe cache benchmark
 
 observe:
 	FAULTWATCH_PORT=$(FAULTWATCH_PORT) docker compose --profile monitoring up --build --wait
+
+cache:
+	FAULTWATCH_PORT=$(FAULTWATCH_PORT) FAULTWATCH_REDIS_URL=redis://redis:6379/0 docker compose --profile monitoring --profile cache up --build --wait
 
 benchmark:
 	uv run --locked python scripts/benchmark_api.py --url http://127.0.0.1:$(FAULTWATCH_PORT)
