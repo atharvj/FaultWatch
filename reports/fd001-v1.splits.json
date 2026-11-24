@@ -1,0 +1,1747 @@
+{
+  "dataset_sha256": {
+    "train_FD001.txt": "963b5e22825b34d8b21c69e1aeb4af3e647050eb672ee8834ba4b5d91d2de0f8",
+    "test_FD001.txt": "3cda7109ce17bafb5443f2ac926cfcf88154b941b8c4cf95eb55d1ddd6f52851",
+    "RUL_FD001.txt": "a19c8ec94931949d0485bdc35118206e9c81c4547b422efb9cf86f4ceddbceca"
+  },
+  "seed": 27,
+  "method": "shuffled_group_k_fold",
+  "validation_cutoff_percentages": [
+    40,
+    60,
+    80
+  ],
+  "folds": [
+    {
+      "fold": 1,
+      "fit_engine_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        15,
+        16,
+        17,
+        18,
+        20,
+        24,
+        25,
+        26,
+        29,
+        30,
+        32,
+        33,
+        34,
+        35,
+        37,
+        38,
+        39,
+        40,
+        43,
+        47,
+        49,
+        50,
+        52,
+        53,
+        54,
+        55,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        67,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        84,
+        85,
+        89,
+        93,
+        97,
+        99,
+        100
+      ],
+      "validation_engine_ids": [
+        7,
+        13,
+        19,
+        21,
+        22,
+        23,
+        27,
+        28,
+        31,
+        36,
+        41,
+        42,
+        44,
+        45,
+        46,
+        48,
+        51,
+        56,
+        65,
+        66,
+        68,
+        69,
+        70,
+        83,
+        86,
+        87,
+        88,
+        90,
+        91,
+        92,
+        94,
+        95,
+        96,
+        98
+      ],
+      "validation_endpoints": [
+        {
+          "engine_id": 7,
+          "cycle": 103
+        },
+        {
+          "engine_id": 7,
+          "cycle": 155
+        },
+        {
+          "engine_id": 7,
+          "cycle": 207
+        },
+        {
+          "engine_id": 13,
+          "cycle": 65
+        },
+        {
+          "engine_id": 13,
+          "cycle": 97
+        },
+        {
+          "engine_id": 13,
+          "cycle": 130
+        },
+        {
+          "engine_id": 19,
+          "cycle": 63
+        },
+        {
+          "engine_id": 19,
+          "cycle": 94
+        },
+        {
+          "engine_id": 19,
+          "cycle": 126
+        },
+        {
+          "engine_id": 21,
+          "cycle": 78
+        },
+        {
+          "engine_id": 21,
+          "cycle": 117
+        },
+        {
+          "engine_id": 21,
+          "cycle": 156
+        },
+        {
+          "engine_id": 22,
+          "cycle": 80
+        },
+        {
+          "engine_id": 22,
+          "cycle": 121
+        },
+        {
+          "engine_id": 22,
+          "cycle": 161
+        },
+        {
+          "engine_id": 23,
+          "cycle": 67
+        },
+        {
+          "engine_id": 23,
+          "cycle": 100
+        },
+        {
+          "engine_id": 23,
+          "cycle": 134
+        },
+        {
+          "engine_id": 27,
+          "cycle": 62
+        },
+        {
+          "engine_id": 27,
+          "cycle": 93
+        },
+        {
+          "engine_id": 27,
+          "cycle": 124
+        },
+        {
+          "engine_id": 28,
+          "cycle": 66
+        },
+        {
+          "engine_id": 28,
+          "cycle": 99
+        },
+        {
+          "engine_id": 28,
+          "cycle": 132
+        },
+        {
+          "engine_id": 31,
+          "cycle": 93
+        },
+        {
+          "engine_id": 31,
+          "cycle": 140
+        },
+        {
+          "engine_id": 31,
+          "cycle": 187
+        },
+        {
+          "engine_id": 36,
+          "cycle": 63
+        },
+        {
+          "engine_id": 36,
+          "cycle": 94
+        },
+        {
+          "engine_id": 36,
+          "cycle": 126
+        },
+        {
+          "engine_id": 41,
+          "cycle": 86
+        },
+        {
+          "engine_id": 41,
+          "cycle": 129
+        },
+        {
+          "engine_id": 41,
+          "cycle": 172
+        },
+        {
+          "engine_id": 42,
+          "cycle": 78
+        },
+        {
+          "engine_id": 42,
+          "cycle": 117
+        },
+        {
+          "engine_id": 42,
+          "cycle": 156
+        },
+        {
+          "engine_id": 44,
+          "cycle": 76
+        },
+        {
+          "engine_id": 44,
+          "cycle": 115
+        },
+        {
+          "engine_id": 44,
+          "cycle": 153
+        },
+        {
+          "engine_id": 45,
+          "cycle": 63
+        },
+        {
+          "engine_id": 45,
+          "cycle": 94
+        },
+        {
+          "engine_id": 45,
+          "cycle": 126
+        },
+        {
+          "engine_id": 46,
+          "cycle": 102
+        },
+        {
+          "engine_id": 46,
+          "cycle": 153
+        },
+        {
+          "engine_id": 46,
+          "cycle": 204
+        },
+        {
+          "engine_id": 48,
+          "cycle": 92
+        },
+        {
+          "engine_id": 48,
+          "cycle": 138
+        },
+        {
+          "engine_id": 48,
+          "cycle": 184
+        },
+        {
+          "engine_id": 51,
+          "cycle": 85
+        },
+        {
+          "engine_id": 51,
+          "cycle": 127
+        },
+        {
+          "engine_id": 51,
+          "cycle": 170
+        },
+        {
+          "engine_id": 56,
+          "cycle": 110
+        },
+        {
+          "engine_id": 56,
+          "cycle": 165
+        },
+        {
+          "engine_id": 56,
+          "cycle": 220
+        },
+        {
+          "engine_id": 65,
+          "cycle": 61
+        },
+        {
+          "engine_id": 65,
+          "cycle": 91
+        },
+        {
+          "engine_id": 65,
+          "cycle": 122
+        },
+        {
+          "engine_id": 66,
+          "cycle": 80
+        },
+        {
+          "engine_id": 66,
+          "cycle": 121
+        },
+        {
+          "engine_id": 66,
+          "cycle": 161
+        },
+        {
+          "engine_id": 68,
+          "cycle": 79
+        },
+        {
+          "engine_id": 68,
+          "cycle": 119
+        },
+        {
+          "engine_id": 68,
+          "cycle": 159
+        },
+        {
+          "engine_id": 69,
+          "cycle": 144
+        },
+        {
+          "engine_id": 69,
+          "cycle": 217
+        },
+        {
+          "engine_id": 69,
+          "cycle": 289
+        },
+        {
+          "engine_id": 70,
+          "cycle": 54
+        },
+        {
+          "engine_id": 70,
+          "cycle": 82
+        },
+        {
+          "engine_id": 70,
+          "cycle": 109
+        },
+        {
+          "engine_id": 83,
+          "cycle": 117
+        },
+        {
+          "engine_id": 83,
+          "cycle": 175
+        },
+        {
+          "engine_id": 83,
+          "cycle": 234
+        },
+        {
+          "engine_id": 86,
+          "cycle": 111
+        },
+        {
+          "engine_id": 86,
+          "cycle": 166
+        },
+        {
+          "engine_id": 86,
+          "cycle": 222
+        },
+        {
+          "engine_id": 87,
+          "cycle": 71
+        },
+        {
+          "engine_id": 87,
+          "cycle": 106
+        },
+        {
+          "engine_id": 87,
+          "cycle": 142
+        },
+        {
+          "engine_id": 88,
+          "cycle": 85
+        },
+        {
+          "engine_id": 88,
+          "cycle": 127
+        },
+        {
+          "engine_id": 88,
+          "cycle": 170
+        },
+        {
+          "engine_id": 90,
+          "cycle": 61
+        },
+        {
+          "engine_id": 90,
+          "cycle": 92
+        },
+        {
+          "engine_id": 90,
+          "cycle": 123
+        },
+        {
+          "engine_id": 91,
+          "cycle": 54
+        },
+        {
+          "engine_id": 91,
+          "cycle": 81
+        },
+        {
+          "engine_id": 91,
+          "cycle": 108
+        },
+        {
+          "engine_id": 92,
+          "cycle": 136
+        },
+        {
+          "engine_id": 92,
+          "cycle": 204
+        },
+        {
+          "engine_id": 92,
+          "cycle": 272
+        },
+        {
+          "engine_id": 94,
+          "cycle": 103
+        },
+        {
+          "engine_id": 94,
+          "cycle": 154
+        },
+        {
+          "engine_id": 94,
+          "cycle": 206
+        },
+        {
+          "engine_id": 95,
+          "cycle": 113
+        },
+        {
+          "engine_id": 95,
+          "cycle": 169
+        },
+        {
+          "engine_id": 95,
+          "cycle": 226
+        },
+        {
+          "engine_id": 96,
+          "cycle": 134
+        },
+        {
+          "engine_id": 96,
+          "cycle": 201
+        },
+        {
+          "engine_id": 96,
+          "cycle": 268
+        },
+        {
+          "engine_id": 98,
+          "cycle": 62
+        },
+        {
+          "engine_id": 98,
+          "cycle": 93
+        },
+        {
+          "engine_id": 98,
+          "cycle": 124
+        }
+      ]
+    },
+    {
+      "fold": 2,
+      "fit_engine_ids": [
+        3,
+        4,
+        5,
+        7,
+        11,
+        13,
+        14,
+        16,
+        19,
+        20,
+        21,
+        22,
+        23,
+        25,
+        26,
+        27,
+        28,
+        31,
+        32,
+        33,
+        34,
+        36,
+        38,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        54,
+        55,
+        56,
+        57,
+        60,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        72,
+        73,
+        77,
+        80,
+        83,
+        84,
+        86,
+        87,
+        88,
+        90,
+        91,
+        92,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99
+      ],
+      "validation_engine_ids": [
+        1,
+        2,
+        6,
+        8,
+        9,
+        10,
+        12,
+        15,
+        17,
+        18,
+        24,
+        29,
+        30,
+        35,
+        37,
+        39,
+        53,
+        58,
+        59,
+        61,
+        62,
+        71,
+        74,
+        75,
+        76,
+        78,
+        79,
+        81,
+        82,
+        85,
+        89,
+        93,
+        100
+      ],
+      "validation_endpoints": [
+        {
+          "engine_id": 1,
+          "cycle": 76
+        },
+        {
+          "engine_id": 1,
+          "cycle": 115
+        },
+        {
+          "engine_id": 1,
+          "cycle": 153
+        },
+        {
+          "engine_id": 2,
+          "cycle": 114
+        },
+        {
+          "engine_id": 2,
+          "cycle": 172
+        },
+        {
+          "engine_id": 2,
+          "cycle": 229
+        },
+        {
+          "engine_id": 6,
+          "cycle": 75
+        },
+        {
+          "engine_id": 6,
+          "cycle": 112
+        },
+        {
+          "engine_id": 6,
+          "cycle": 150
+        },
+        {
+          "engine_id": 8,
+          "cycle": 60
+        },
+        {
+          "engine_id": 8,
+          "cycle": 90
+        },
+        {
+          "engine_id": 8,
+          "cycle": 120
+        },
+        {
+          "engine_id": 9,
+          "cycle": 80
+        },
+        {
+          "engine_id": 9,
+          "cycle": 120
+        },
+        {
+          "engine_id": 9,
+          "cycle": 160
+        },
+        {
+          "engine_id": 10,
+          "cycle": 88
+        },
+        {
+          "engine_id": 10,
+          "cycle": 133
+        },
+        {
+          "engine_id": 10,
+          "cycle": 177
+        },
+        {
+          "engine_id": 12,
+          "cycle": 68
+        },
+        {
+          "engine_id": 12,
+          "cycle": 102
+        },
+        {
+          "engine_id": 12,
+          "cycle": 136
+        },
+        {
+          "engine_id": 15,
+          "cycle": 82
+        },
+        {
+          "engine_id": 15,
+          "cycle": 124
+        },
+        {
+          "engine_id": 15,
+          "cycle": 165
+        },
+        {
+          "engine_id": 17,
+          "cycle": 110
+        },
+        {
+          "engine_id": 17,
+          "cycle": 165
+        },
+        {
+          "engine_id": 17,
+          "cycle": 220
+        },
+        {
+          "engine_id": 18,
+          "cycle": 78
+        },
+        {
+          "engine_id": 18,
+          "cycle": 117
+        },
+        {
+          "engine_id": 18,
+          "cycle": 156
+        },
+        {
+          "engine_id": 24,
+          "cycle": 58
+        },
+        {
+          "engine_id": 24,
+          "cycle": 88
+        },
+        {
+          "engine_id": 24,
+          "cycle": 117
+        },
+        {
+          "engine_id": 29,
+          "cycle": 65
+        },
+        {
+          "engine_id": 29,
+          "cycle": 97
+        },
+        {
+          "engine_id": 29,
+          "cycle": 130
+        },
+        {
+          "engine_id": 30,
+          "cycle": 77
+        },
+        {
+          "engine_id": 30,
+          "cycle": 116
+        },
+        {
+          "engine_id": 30,
+          "cycle": 155
+        },
+        {
+          "engine_id": 35,
+          "cycle": 72
+        },
+        {
+          "engine_id": 35,
+          "cycle": 108
+        },
+        {
+          "engine_id": 35,
+          "cycle": 144
+        },
+        {
+          "engine_id": 37,
+          "cycle": 68
+        },
+        {
+          "engine_id": 37,
+          "cycle": 102
+        },
+        {
+          "engine_id": 37,
+          "cycle": 136
+        },
+        {
+          "engine_id": 39,
+          "cycle": 51
+        },
+        {
+          "engine_id": 39,
+          "cycle": 76
+        },
+        {
+          "engine_id": 39,
+          "cycle": 102
+        },
+        {
+          "engine_id": 53,
+          "cycle": 78
+        },
+        {
+          "engine_id": 53,
+          "cycle": 117
+        },
+        {
+          "engine_id": 53,
+          "cycle": 156
+        },
+        {
+          "engine_id": 58,
+          "cycle": 58
+        },
+        {
+          "engine_id": 58,
+          "cycle": 88
+        },
+        {
+          "engine_id": 58,
+          "cycle": 117
+        },
+        {
+          "engine_id": 59,
+          "cycle": 92
+        },
+        {
+          "engine_id": 59,
+          "cycle": 138
+        },
+        {
+          "engine_id": 59,
+          "cycle": 184
+        },
+        {
+          "engine_id": 61,
+          "cycle": 74
+        },
+        {
+          "engine_id": 61,
+          "cycle": 111
+        },
+        {
+          "engine_id": 61,
+          "cycle": 148
+        },
+        {
+          "engine_id": 62,
+          "cycle": 72
+        },
+        {
+          "engine_id": 62,
+          "cycle": 108
+        },
+        {
+          "engine_id": 62,
+          "cycle": 144
+        },
+        {
+          "engine_id": 71,
+          "cycle": 83
+        },
+        {
+          "engine_id": 71,
+          "cycle": 124
+        },
+        {
+          "engine_id": 71,
+          "cycle": 166
+        },
+        {
+          "engine_id": 74,
+          "cycle": 66
+        },
+        {
+          "engine_id": 74,
+          "cycle": 99
+        },
+        {
+          "engine_id": 74,
+          "cycle": 132
+        },
+        {
+          "engine_id": 75,
+          "cycle": 91
+        },
+        {
+          "engine_id": 75,
+          "cycle": 137
+        },
+        {
+          "engine_id": 75,
+          "cycle": 183
+        },
+        {
+          "engine_id": 76,
+          "cycle": 84
+        },
+        {
+          "engine_id": 76,
+          "cycle": 126
+        },
+        {
+          "engine_id": 76,
+          "cycle": 168
+        },
+        {
+          "engine_id": 78,
+          "cycle": 92
+        },
+        {
+          "engine_id": 78,
+          "cycle": 138
+        },
+        {
+          "engine_id": 78,
+          "cycle": 184
+        },
+        {
+          "engine_id": 79,
+          "cycle": 79
+        },
+        {
+          "engine_id": 79,
+          "cycle": 119
+        },
+        {
+          "engine_id": 79,
+          "cycle": 159
+        },
+        {
+          "engine_id": 81,
+          "cycle": 96
+        },
+        {
+          "engine_id": 81,
+          "cycle": 144
+        },
+        {
+          "engine_id": 81,
+          "cycle": 192
+        },
+        {
+          "engine_id": 82,
+          "cycle": 85
+        },
+        {
+          "engine_id": 82,
+          "cycle": 128
+        },
+        {
+          "engine_id": 82,
+          "cycle": 171
+        },
+        {
+          "engine_id": 85,
+          "cycle": 75
+        },
+        {
+          "engine_id": 85,
+          "cycle": 112
+        },
+        {
+          "engine_id": 85,
+          "cycle": 150
+        },
+        {
+          "engine_id": 89,
+          "cycle": 86
+        },
+        {
+          "engine_id": 89,
+          "cycle": 130
+        },
+        {
+          "engine_id": 89,
+          "cycle": 173
+        },
+        {
+          "engine_id": 93,
+          "cycle": 62
+        },
+        {
+          "engine_id": 93,
+          "cycle": 93
+        },
+        {
+          "engine_id": 93,
+          "cycle": 124
+        },
+        {
+          "engine_id": 100,
+          "cycle": 80
+        },
+        {
+          "engine_id": 100,
+          "cycle": 120
+        },
+        {
+          "engine_id": 100,
+          "cycle": 160
+        }
+      ]
+    },
+    {
+      "fold": 3,
+      "fit_engine_ids": [
+        1,
+        2,
+        6,
+        7,
+        8,
+        9,
+        10,
+        12,
+        13,
+        15,
+        17,
+        18,
+        19,
+        21,
+        22,
+        23,
+        24,
+        27,
+        28,
+        29,
+        30,
+        31,
+        35,
+        36,
+        37,
+        39,
+        41,
+        42,
+        44,
+        45,
+        46,
+        48,
+        51,
+        53,
+        56,
+        58,
+        59,
+        61,
+        62,
+        65,
+        66,
+        68,
+        69,
+        70,
+        71,
+        74,
+        75,
+        76,
+        78,
+        79,
+        81,
+        82,
+        83,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        98,
+        100
+      ],
+      "validation_engine_ids": [
+        3,
+        4,
+        5,
+        11,
+        14,
+        16,
+        20,
+        25,
+        26,
+        32,
+        33,
+        34,
+        38,
+        40,
+        43,
+        47,
+        49,
+        50,
+        52,
+        54,
+        55,
+        57,
+        60,
+        63,
+        64,
+        67,
+        72,
+        73,
+        77,
+        80,
+        84,
+        97,
+        99
+      ],
+      "validation_endpoints": [
+        {
+          "engine_id": 3,
+          "cycle": 71
+        },
+        {
+          "engine_id": 3,
+          "cycle": 107
+        },
+        {
+          "engine_id": 3,
+          "cycle": 143
+        },
+        {
+          "engine_id": 4,
+          "cycle": 75
+        },
+        {
+          "engine_id": 4,
+          "cycle": 113
+        },
+        {
+          "engine_id": 4,
+          "cycle": 151
+        },
+        {
+          "engine_id": 5,
+          "cycle": 107
+        },
+        {
+          "engine_id": 5,
+          "cycle": 161
+        },
+        {
+          "engine_id": 5,
+          "cycle": 215
+        },
+        {
+          "engine_id": 11,
+          "cycle": 96
+        },
+        {
+          "engine_id": 11,
+          "cycle": 144
+        },
+        {
+          "engine_id": 11,
+          "cycle": 192
+        },
+        {
+          "engine_id": 14,
+          "cycle": 72
+        },
+        {
+          "engine_id": 14,
+          "cycle": 108
+        },
+        {
+          "engine_id": 14,
+          "cycle": 144
+        },
+        {
+          "engine_id": 16,
+          "cycle": 83
+        },
+        {
+          "engine_id": 16,
+          "cycle": 125
+        },
+        {
+          "engine_id": 16,
+          "cycle": 167
+        },
+        {
+          "engine_id": 20,
+          "cycle": 93
+        },
+        {
+          "engine_id": 20,
+          "cycle": 140
+        },
+        {
+          "engine_id": 20,
+          "cycle": 187
+        },
+        {
+          "engine_id": 25,
+          "cycle": 92
+        },
+        {
+          "engine_id": 25,
+          "cycle": 138
+        },
+        {
+          "engine_id": 25,
+          "cycle": 184
+        },
+        {
+          "engine_id": 26,
+          "cycle": 79
+        },
+        {
+          "engine_id": 26,
+          "cycle": 119
+        },
+        {
+          "engine_id": 26,
+          "cycle": 159
+        },
+        {
+          "engine_id": 32,
+          "cycle": 76
+        },
+        {
+          "engine_id": 32,
+          "cycle": 114
+        },
+        {
+          "engine_id": 32,
+          "cycle": 152
+        },
+        {
+          "engine_id": 33,
+          "cycle": 80
+        },
+        {
+          "engine_id": 33,
+          "cycle": 120
+        },
+        {
+          "engine_id": 33,
+          "cycle": 160
+        },
+        {
+          "engine_id": 34,
+          "cycle": 78
+        },
+        {
+          "engine_id": 34,
+          "cycle": 117
+        },
+        {
+          "engine_id": 34,
+          "cycle": 156
+        },
+        {
+          "engine_id": 38,
+          "cycle": 77
+        },
+        {
+          "engine_id": 38,
+          "cycle": 116
+        },
+        {
+          "engine_id": 38,
+          "cycle": 155
+        },
+        {
+          "engine_id": 40,
+          "cycle": 75
+        },
+        {
+          "engine_id": 40,
+          "cycle": 112
+        },
+        {
+          "engine_id": 40,
+          "cycle": 150
+        },
+        {
+          "engine_id": 43,
+          "cycle": 82
+        },
+        {
+          "engine_id": 43,
+          "cycle": 124
+        },
+        {
+          "engine_id": 43,
+          "cycle": 165
+        },
+        {
+          "engine_id": 47,
+          "cycle": 85
+        },
+        {
+          "engine_id": 47,
+          "cycle": 128
+        },
+        {
+          "engine_id": 47,
+          "cycle": 171
+        },
+        {
+          "engine_id": 49,
+          "cycle": 86
+        },
+        {
+          "engine_id": 49,
+          "cycle": 129
+        },
+        {
+          "engine_id": 49,
+          "cycle": 172
+        },
+        {
+          "engine_id": 50,
+          "cycle": 79
+        },
+        {
+          "engine_id": 50,
+          "cycle": 118
+        },
+        {
+          "engine_id": 50,
+          "cycle": 158
+        },
+        {
+          "engine_id": 52,
+          "cycle": 85
+        },
+        {
+          "engine_id": 52,
+          "cycle": 127
+        },
+        {
+          "engine_id": 52,
+          "cycle": 170
+        },
+        {
+          "engine_id": 54,
+          "cycle": 102
+        },
+        {
+          "engine_id": 54,
+          "cycle": 154
+        },
+        {
+          "engine_id": 54,
+          "cycle": 205
+        },
+        {
+          "engine_id": 55,
+          "cycle": 77
+        },
+        {
+          "engine_id": 55,
+          "cycle": 115
+        },
+        {
+          "engine_id": 55,
+          "cycle": 154
+        },
+        {
+          "engine_id": 57,
+          "cycle": 54
+        },
+        {
+          "engine_id": 57,
+          "cycle": 82
+        },
+        {
+          "engine_id": 57,
+          "cycle": 109
+        },
+        {
+          "engine_id": 60,
+          "cycle": 68
+        },
+        {
+          "engine_id": 60,
+          "cycle": 103
+        },
+        {
+          "engine_id": 60,
+          "cycle": 137
+        },
+        {
+          "engine_id": 63,
+          "cycle": 69
+        },
+        {
+          "engine_id": 63,
+          "cycle": 104
+        },
+        {
+          "engine_id": 63,
+          "cycle": 139
+        },
+        {
+          "engine_id": 64,
+          "cycle": 113
+        },
+        {
+          "engine_id": 64,
+          "cycle": 169
+        },
+        {
+          "engine_id": 64,
+          "cycle": 226
+        },
+        {
+          "engine_id": 67,
+          "cycle": 125
+        },
+        {
+          "engine_id": 67,
+          "cycle": 187
+        },
+        {
+          "engine_id": 67,
+          "cycle": 250
+        },
+        {
+          "engine_id": 72,
+          "cycle": 85
+        },
+        {
+          "engine_id": 72,
+          "cycle": 127
+        },
+        {
+          "engine_id": 72,
+          "cycle": 170
+        },
+        {
+          "engine_id": 73,
+          "cycle": 85
+        },
+        {
+          "engine_id": 73,
+          "cycle": 127
+        },
+        {
+          "engine_id": 73,
+          "cycle": 170
+        },
+        {
+          "engine_id": 77,
+          "cycle": 61
+        },
+        {
+          "engine_id": 77,
+          "cycle": 92
+        },
+        {
+          "engine_id": 77,
+          "cycle": 123
+        },
+        {
+          "engine_id": 80,
+          "cycle": 74
+        },
+        {
+          "engine_id": 80,
+          "cycle": 111
+        },
+        {
+          "engine_id": 80,
+          "cycle": 148
+        },
+        {
+          "engine_id": 84,
+          "cycle": 106
+        },
+        {
+          "engine_id": 84,
+          "cycle": 160
+        },
+        {
+          "engine_id": 84,
+          "cycle": 213
+        },
+        {
+          "engine_id": 97,
+          "cycle": 80
+        },
+        {
+          "engine_id": 97,
+          "cycle": 121
+        },
+        {
+          "engine_id": 97,
+          "cycle": 161
+        },
+        {
+          "engine_id": 99,
+          "cycle": 74
+        },
+        {
+          "engine_id": 99,
+          "cycle": 111
+        },
+        {
+          "engine_id": 99,
+          "cycle": 148
+        }
+      ]
+    }
+  ],
+  "final_fit_nasa_training_engine_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100
+  ],
+  "official_test_engine_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100
+  ]
+}

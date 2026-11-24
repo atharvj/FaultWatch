@@ -60,11 +60,7 @@ def fetch_fd001(destination: Path, archive_path: Path | None = None) -> None:
 
 def validate_telemetry(frame: pd.DataFrame) -> pd.DataFrame:
     """Return telemetry sorted by engine and cycle after checking its schema."""
-    if (
-        frame.empty
-        or not frame.columns.is_unique
-        or set(frame.columns) != set(TELEMETRY_COLUMNS)
-    ):
+    if frame.empty or not frame.columns.is_unique or set(frame.columns) != set(TELEMETRY_COLUMNS):
         raise ValueError("Expected nonempty telemetry with the 26 FD001 columns")
 
     frame = frame.loc[:, list(TELEMETRY_COLUMNS)].astype("float64")
@@ -100,9 +96,9 @@ def read_fd001_telemetry(path: Path) -> pd.DataFrame:
     return frame
 
 
-def verify_fd001(directory: Path) -> None:
-    for name, digest in FD001_HASHES.items():
-        _verify_hash((directory / name).read_bytes(), digest, name)
+def verify_fd001(directory: Path, *names: str) -> None:
+    for name in names:
+        _verify_hash((directory / name).read_bytes(), FD001_HASHES[name], name)
 
 
 def add_training_labels(frame: pd.DataFrame) -> pd.Series:

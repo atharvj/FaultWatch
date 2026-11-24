@@ -93,6 +93,7 @@ dependencies = [
     { name = "pandas" },
     { name = "scikit-learn" },
     { name = "skops" },
+    { name = "threadpoolctl" },
     { name = "torch", version = "2.12.1", source = { registry = "https://pypi.org/simple" }, marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64') or sys_platform != 'linux'" },
     { name = "torch", version = "2.12.1+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')" },
 ]
@@ -109,6 +110,7 @@ requires-dist = [
     { name = "pandas", specifier = ">=2.3,<3" },
     { name = "scikit-learn", specifier = ">=1.7,<1.10" },
     { name = "skops", specifier = ">=0.13,<0.17" },
+    { name = "threadpoolctl", specifier = ">=3.5,<4" },
     { name = "torch", marker = "(platform_machine != 'aarch64' and platform_machine != 'x86_64') or sys_platform != 'linux'", specifier = ">=2.9,<2.13" },
     { name = "torch", marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')", specifier = ">=2.9,<2.13", index = "https://download.pytorch.org/whl/cpu" },
 ]

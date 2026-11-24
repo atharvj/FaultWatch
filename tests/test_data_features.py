@@ -49,9 +49,7 @@ def test_windows_are_causal_and_cannot_cross_engines(telemetry):
     first = causal_features(telemetry)
     assert tuple(first.columns) == FEATURE_COLUMNS
     assert first.index.tolist() == [
-        (engine, cycle)
-        for engine in (1, 2)
-        for cycle in range(WINDOW_SIZE, WINDOW_SIZE + 3)
+        (engine, cycle) for engine in (1, 2) for cycle in range(WINDOW_SIZE, WINDOW_SIZE + 3)
     ]
     assert first.loc[(2, WINDOW_SIZE), "sensor_1_mean"] == 2010.5
     assert first.loc[(2, WINDOW_SIZE), "sensor_1_delta"] == 19

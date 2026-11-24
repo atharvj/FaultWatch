@@ -1,0 +1,81 @@
+{
+  "dataset": "NASA C-MAPSS FD001",
+  "model_version": "fd001-v1",
+  "selected_model": "torch_mlp",
+  "selection_metric": "grouped_validation.mae_cycles",
+  "target": "uncapped_remaining_cycles",
+  "window_cycles": 20,
+  "seed": 27,
+  "cpu_threads": 2,
+  "python": "3.11.12",
+  "platform": "Darwin arm64",
+  "versions": {
+    "numpy": "2.4.6",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.9.1",
+    "skops": "0.16.0",
+    "torch": "2.12.1"
+  },
+  "model_parameters": {
+    "median": {
+      "strategy": "median"
+    },
+    "hist_gradient_boosting": {
+      "max_iter": 180,
+      "learning_rate": 0.08,
+      "max_leaf_nodes": 31,
+      "l2_regularization": 1.0,
+      "early_stopping": false,
+      "random_state": 27
+    },
+    "torch_mlp": {
+      "widths": [
+        64,
+        32
+      ],
+      "epochs": 30,
+      "batch_size": 256,
+      "optimizer": "AdamW",
+      "learning_rate": 0.001,
+      "loss": "SmoothL1Loss",
+      "loss_beta": 0.2,
+      "target_scale": 100.0
+    }
+  },
+  "training_trajectory_count": 100,
+  "training_window_count": 18731,
+  "grouped_validation": {
+    "median": {
+      "sample_count": 300,
+      "mae_cycles": 34.153333333333336,
+      "rmse_cycles": 40.72124752509432
+    },
+    "hist_gradient_boosting": {
+      "sample_count": 300,
+      "mae_cycles": 24.636469496320604,
+      "rmse_cycles": 33.92667966621761
+    },
+    "torch_mlp": {
+      "sample_count": 300,
+      "mae_cycles": 23.27944268544515,
+      "rmse_cycles": 31.081972029650572
+    }
+  },
+  "official_test_endpoints": {
+    "median": {
+      "sample_count": 100,
+      "mae_cycles": 36.32,
+      "rmse_cycles": 45.082369059311866
+    },
+    "hist_gradient_boosting": {
+      "sample_count": 100,
+      "mae_cycles": 18.283912710001108,
+      "rmse_cycles": 24.7694563184978
+    },
+    "torch_mlp": {
+      "sample_count": 100,
+      "mae_cycles": 19.35195055484772,
+      "rmse_cycles": 25.763908405833618
+    }
+  }
+}

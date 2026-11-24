@@ -3,7 +3,7 @@
 FaultWatch uses the 2008 Turbofan Engine Degradation Simulation Data Set from
 the NASA Ames Prognostics Center of Excellence. FD001 simulates one operating
 condition (sea level) and one high-pressure compressor degradation mode.
-Sources: [NASA PCoE repository, dataset 6](https://www.nasa.gov/intelligent-systems-division/discovery-and-systems-health/pcoe/pcoe-data-set-repository/)
+NASA publishes the dataset through its [PCoE repository, dataset 6](https://www.nasa.gov/intelligent-systems-division/discovery-and-systems-health/pcoe/pcoe-data-set-repository/)
 and [NASA Open Data catalog](https://data.nasa.gov/dataset/cmapss-jet-engine-simulated-data).
 
 Retrieval was verified on 2026-11-23 using the [archive linked by NASA PCoE](https://phm-datasets.s3.amazonaws.com/NASA/6.+Turbofan+Engine+Degradation+Simulation+Data+Set.zip).
@@ -42,7 +42,7 @@ The test RUL vector contains one value per engine ID in ascending order and
 applies to that engine's last observed cycle. Its 100 values range from 7 to
 145 cycles. Engine IDs in the two files are separate namespaces.
 
-Citation: A. Saxena and K. Goebel (2008), *Turbofan Engine Degradation
+Cite A. Saxena and K. Goebel (2008), *Turbofan Engine Degradation
 Simulation Data Set*, NASA Prognostics Data Repository, NASA Ames Research
 Center. The bundled paper by Saxena, Goebel, Simon and Eklund (2008) describes
 the damage-propagation simulation.
