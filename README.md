@@ -5,6 +5,8 @@ FaultWatch estimates how many cycles a turbofan engine has left from its latest
 simulation dataset. Replay streams held-out telemetry to a local API and
 dashboard, with PostgreSQL storing one reading per engine and cycle.
 
+![Remaining-life prediction and sensor history in the FaultWatch dashboard](docs/dashboard.png)
+
 ## Run it
 
 Requires Python 3.11 and [uv](https://docs.astral.sh/uv/getting-started/installation/).
@@ -67,6 +69,17 @@ In another terminal, run `make replay FAULTWATCH_PORT=18000` and open the
 [dashboard](http://127.0.0.1:18000). The single-node cluster uses a project-local
 kubeconfig, a read-only model mount and a PostgreSQL volume that survives pod
 replacement. `make kind-down` deletes the cluster and its local database.
+
+## Model tools
+
+```sh
+uv run --locked --group experiments faultwatch track
+uv run --locked --group experiments faultwatch runs
+uv run --locked --group experiments faultwatch export-onnx
+```
+
+MLflow keeps the fitted candidates, parameters and scores in a local store.
+ONNX export checks the graph against PyTorch on the official test endpoints.
 
 ## Results
 

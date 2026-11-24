@@ -64,11 +64,14 @@ def main():
     if not 1 <= args.workers <= 32 or not 1 <= args.seconds <= 120:
         parser.error("Use 1–32 workers and 1–120 seconds")
 
-    with httpx2.Client(base_url=args.url, trust_env=False, timeout=5) as client:
-        for engine in (1, 2, 3):
-            response = client.get(PREDICTION.format(engine=engine))
-            if not response.is_success or response.json().get("status") != "ready":
-                parser.error("Start the demo and replay test engines 1–3 first")
+    try:
+        with httpx2.Client(base_url=args.url, trust_env=False, timeout=5) as client:
+            for engine in (1, 2, 3):
+                response = client.get(PREDICTION.format(engine=engine))
+                if not response.is_success or response.json().get("status") != "ready":
+                    parser.error("Start the demo and replay test engines 1–3 first")
+    except (httpx2.HTTPError, ValueError) as error:
+        parser.error(f"Unable to check the local demo: {error}")
 
     start = perf_counter()
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
@@ -78,6 +81,8 @@ def main():
         ]
         observations = [sample for job in jobs for sample in job.result()]
     elapsed = perf_counter() - start
+    if not observations:
+        raise SystemExit("The benchmark recorded no requests")
     total = summarize(observations, elapsed)
     print(
         json.dumps(

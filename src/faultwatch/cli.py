@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import os
 from pathlib import Path
 
 from faultwatch.data import ENGINE, fetch_fd001, read_telemetry
@@ -37,6 +38,16 @@ def main() -> None:
     replay.add_argument(
         "--rate", type=float, default=25, help="Events per second. Use 0 for no delay"
     )
+    export = commands.add_parser("export-onnx", help="Export and benchmark the FD001 MLP")
+    export.add_argument("--data", type=Path, default=DEFAULT_DATA)
+    export.add_argument("--bundle", type=Path, default=DEFAULT_BUNDLE)
+    export.add_argument("--output", type=Path, default=Path("artifacts/fd001-v1.onnx"))
+
+    track = commands.add_parser("track", help="Log a training bundle to local MLflow")
+    track.add_argument("--bundle", type=Path, default=DEFAULT_BUNDLE)
+    track.add_argument("--store", type=Path, default=Path("artifacts/mlflow"))
+    runs = commands.add_parser("runs", help="Compare local MLflow runs by validation MAE")
+    runs.add_argument("--store", type=Path, default=Path("artifacts/mlflow"))
     args = parser.parse_args()
 
     try:
@@ -83,5 +94,25 @@ def main() -> None:
             from faultwatch.replay import replay_fd001
 
             print(json.dumps(replay_fd001(args.data, args.url, args.engine, args.rate), indent=2))
+        elif args.command == "export-onnx":
+            from faultwatch.onnx_export import export_and_validate
+            from faultwatch.training import official_test_cases
+
+            features, _ = official_test_cases(args.data)
+            print(json.dumps(export_and_validate(args.bundle, args.output, features), indent=2))
+        elif args.command in {"track", "runs"}:
+            os.environ["MLFLOW_DISABLE_TELEMETRY"] = "true"
+            from faultwatch.tracking import list_runs, track_bundle
+
+            result = (
+                track_bundle(args.bundle, args.store)
+                if args.command == "track"
+                else list_runs(args.store)
+            )
+            print(json.dumps(result, indent=2))
+    except ModuleNotFoundError as error:
+        if args.command not in {"export-onnx", "track", "runs"}:
+            raise
+        parser.exit(1, f"faultwatch: {error}. Run with uv run --group experiments.\n")
     except (OSError, ValueError) as error:
         parser.exit(1, f"faultwatch: {error}\n")

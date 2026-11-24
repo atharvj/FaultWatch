@@ -92,7 +92,7 @@ def _validate_candidates(
     return validation_metrics, folds
 
 
-def _official_test(directory: Path) -> tuple[pd.DataFrame, np.ndarray]:
+def official_test_cases(directory: Path) -> tuple[pd.DataFrame, np.ndarray]:
     verify_fd001(directory, "test_FD001.txt", "RUL_FD001.txt")
     test = read_fd001_telemetry(directory / "test_FD001.txt")
     labels = read_test_rul(directory / "RUL_FD001.txt")
@@ -104,7 +104,7 @@ def _official_test(directory: Path) -> tuple[pd.DataFrame, np.ndarray]:
 
 
 def evaluate(directory: Path, bundle: Path) -> dict:
-    features, actual = _official_test(directory)
+    features, actual = official_test_cases(directory)
     manifest = load_manifest(bundle)
     with threadpool_limits(CPU_THREADS):
         return {
@@ -131,7 +131,7 @@ def train_and_evaluate(directory: Path, output: Path) -> dict:
         final = fit_candidates(features, labels.to_numpy())
 
         # Access the official evaluation cases only after selection/refitting.
-        test_features, test_actual = _official_test(directory)
+        test_features, test_actual = official_test_cases(directory)
         output.parent.mkdir(parents=True, exist_ok=True)
         with TemporaryDirectory(dir=output.parent) as staging:
             bundle = Path(staging)

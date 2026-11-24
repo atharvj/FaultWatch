@@ -22,3 +22,23 @@ The run used a warm database and no concurrent ingest.
 
 The run completed in 30.027 seconds at 304.93 requests/s with zero failures.
 See the [benchmark JSON](../reports/api-benchmark.json).
+
+## Model runtime
+
+`uv run --locked --group experiments faultwatch export-onnx` exports the
+MLP and scaler as a 40,742-byte ONNX graph. It takes a dynamic batch of 64
+ordered features per row and emits remaining cycles. Feature names and the
+model version are embedded in the graph.
+
+ONNX Runtime and PyTorch agreed within 0.000031 cycles across all 100
+official test endpoints. Timings start from precomputed features and include
+scaling and graph execution. Both runtimes used two CPU threads on the same
+M2 Pro. Each batch size and runtime used 30 warmup calls and 300 timed calls.
+
+| Batch | PyTorch p50 / p95 (µs) | ONNX Runtime p50 / p95 (µs) |
+|---|---:|---:|
+| 1 | 20.83 / 21.21 | 5.63 / 5.92 |
+| 100 | 34.17 / 38.67 | 25.77 / 49.43 |
+
+See the [ONNX benchmark JSON](../reports/onnx-benchmark.json) for versions,
+tolerances, and the graph checksum.

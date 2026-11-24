@@ -21,3 +21,5 @@ dist/
 *.tfstate*
 .terraform/
 /.local/
+
+*.onnx

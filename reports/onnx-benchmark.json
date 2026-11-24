@@ -1,0 +1,44 @@
+{
+  "model": "torch_mlp",
+  "input_shape": [
+    "batch",
+    64
+  ],
+  "input_dtype": "float64",
+  "opset": 18,
+  "onnxruntime": "1.32.0",
+  "pytorch": "2.12.1",
+  "cpu_threads": 2,
+  "artifact_bytes": 40742,
+  "artifact_sha256": "83b51441d8c49f23392a91e0e701857abe86665068a93d7470827ed0077ee781",
+  "samples": 100,
+  "max_absolute_difference_cycles": 3.0517578125e-05,
+  "tolerance_cycles": {
+    "atol": 0.0001,
+    "rtol": 1e-05
+  },
+  "warmup_calls": 30,
+  "timed_calls": 300,
+  "latency_by_batch": {
+    "1": {
+      "pytorch": {
+        "p50_us": 20.833,
+        "p95_us": 21.21
+      },
+      "onnxruntime": {
+        "p50_us": 5.625,
+        "p95_us": 5.917
+      }
+    },
+    "100": {
+      "pytorch": {
+        "p50_us": 34.167,
+        "p95_us": 38.672
+      },
+      "onnxruntime": {
+        "p50_us": 25.77,
+        "p95_us": 49.425
+      }
+    }
+  }
+}
