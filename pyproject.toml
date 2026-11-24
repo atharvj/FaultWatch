@@ -3,7 +3,16 @@ name = "faultwatch"
 version = "0.1.0"
 description = "Remaining useful life prediction on NASA C-MAPSS simulations"
 requires-python = ">=3.11,<3.12"
-dependencies = []
+dependencies = [
+    "numpy>=2.2,<3",
+    "pandas>=2.3,<3",
+    "scikit-learn>=1.7,<1.10",
+    "skops>=0.13,<0.17",
+    "torch>=2.9,<2.13",
+]
+
+[project.scripts]
+faultwatch = "faultwatch.cli:main"
 
 [dependency-groups]
 dev = ["pytest>=8.4,<10", "ruff>=0.15,<0.16"]
@@ -17,3 +26,11 @@ testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 100
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu", marker = "sys_platform == 'linux' and (platform_machine == 'x86_64' or platform_machine == 'aarch64')" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
