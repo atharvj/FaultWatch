@@ -68,3 +68,11 @@ The mean of the two trial p95s fell 46.8%, from 47.68 to 25.36 ms. This
 workload repeatedly reads the same three engines. Cache tests cover expiry,
 invalid entries, a new cycle, gap backfill and a stopped Redis container.
 [Full trial results](../reports/redis-benchmark.json)
+
+## Terraform S3 lab
+
+Terraform 1.17.2 with the AWS provider 5.100.0 provisioned three resources
+against Moto 5.2.6. All four public-access blocks and AES256 configuration
+were verified through the AWS SDK. Two artifacts were restored with
+matching checksums and the bucket count returned to zero after destroy.
+[Lab result](../reports/s3-lab.json)

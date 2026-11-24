@@ -82,6 +82,20 @@ uv run --locked --group experiments faultwatch export-onnx
 MLflow keeps the fitted candidates, parameters and scores in a local store.
 ONNX export checks the graph against PyTorch on the official test endpoints.
 
+## Artifact storage
+
+The [Terraform lab](infra/terraform/s3) provisions an S3-compatible bucket on
+loopback, transfers the fitted model and manifest, verifies their checksums,
+and removes the bucket.
+
+```sh
+uv run --locked --group aws python scripts/s3_lab.py
+```
+
+Use Terraform 1.17 and a trained bundle. The lab uses Moto, fixed local
+credentials, and a loopback-only endpoint. See the [apply and teardown results](reports/s3-lab.json).
+A live AWS deployment requires an eligible account and separate approval.
+
 ## Results
 
 One prediction per engine on 100 held-out NASA test trajectories. Errors are
