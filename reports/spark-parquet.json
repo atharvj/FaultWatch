@@ -1,0 +1,19 @@
+{
+  "spark": "4.3.0",
+  "master": "local[2]",
+  "feature_count": 64,
+  "partition_column": "split",
+  "parquet_files": 4,
+  "parquet_bytes": 3934010,
+  "splits": {
+    "train": {
+      "rows": 18731,
+      "max_absolute_feature_difference": 5.4569682106375694e-12
+    },
+    "test": {
+      "rows": 11196,
+      "max_absolute_feature_difference": 3.637978807091713e-12
+    }
+  },
+  "materialize_and_verify_seconds": 10.328
+}

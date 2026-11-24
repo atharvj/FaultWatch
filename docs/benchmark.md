@@ -85,3 +85,11 @@ The KRaft broker accepted 80 real FD001 messages. A consumer stopped after
 retained 31 and 49 cycles in order for engines 1 and 2. This lab measures
 ordering and repeated delivery on a single broker.
 [Replay results](../reports/kafka-replay.json)
+
+## Spark and Parquet
+
+Spark 4.3.0 running with two local workers generated and verified 64 causal
+features for 18,731 train and 11,196 test rows in 10.33 seconds. Four Parquet
+files across two split partitions took 3,934,010 bytes. The largest feature
+error against pandas was 5.46e-12. Only the training partition contains the
+true remaining-life label. [Round-trip results](../reports/spark-parquet.json)

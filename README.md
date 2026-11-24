@@ -112,6 +112,14 @@ transaction and accepts identical retries. The direct HTTP replay remains
 available. Run `uv run --locked --group kafka python scripts/kafka_lab.py`
 for the [restart and repeat-delivery check](reports/kafka-replay.json).
 
+## Spark feature export
+
+With Java 21 and the FD001 files available, run
+`uv run --locked --group spark python scripts/spark_features.py` to write
+train and test Parquet partitions to `artifacts/fd001-parquet`. The job
+reads them back and checks every feature against the pandas pipeline.
+[Verification results](reports/spark-parquet.json)
+
 ## Results
 
 One prediction per engine on 100 held-out NASA test trajectories. Errors are

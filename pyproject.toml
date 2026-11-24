@@ -28,6 +28,7 @@ faultwatch = "faultwatch.cli:main"
 dev = ["pytest>=8.4,<10", "ruff>=0.15,<0.16"]
 aws = ["boto3>=1.44,<2", "moto[server]>=5.2,<6"]
 kafka = ["confluent-kafka>=2.14,<3"]
+spark = ["pyspark>=4.2,<5"]
 experiments = [
     "mlflow-skinny>=3.10,<4",
     "onnx>=1.18,<2",
