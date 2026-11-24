@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FaultWatch</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --background: #0b1218;
+      --panel: #121d25;
+      --line: #2c404a;
+      --muted: #a4b5be;
+      --accent: #86e6c7;
+      --warning: #ffcb89;
+      font: 16px/1.5 system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--background); color: #edf4f5; }
+    header, main { max-width: 1160px; margin: auto; padding: 28px clamp(16px, 4vw, 44px); }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+    h1 { font-size: clamp(26px, 4vw, 36px); letter-spacing: -.04em; margin: 0; }
+    h2 { font-size: 16px; margin: 0; }
+    p { margin: 0; color: var(--muted); }
+    a { color: var(--accent); white-space: nowrap; }
+    main { padding-top: 8px; }
+    label { color: var(--muted); font-size: 14px; }
+    select {
+      margin-left: 8px; padding: 8px 12px; border-radius: 5px; border: 1px solid var(--line);
+      background: var(--background); font: 14px/1.5 system-ui, sans-serif; color: #edf4f5;
+    }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    #message { margin: 16px 0; }
+    .grid { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 16px; margin-top: 18px; }
+    section { min-width: 0; padding: 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; }
+    .readout { display: flex; align-items: baseline; gap: 8px; margin: 10px 0; color: var(--muted); }
+    output { color: var(--accent); font-size: 46px; line-height: 1.2; letter-spacing: -.05em; }
+    output, dd { font-variant-numeric: tabular-nums; }
+    dl { margin: 18px 0 0; font-size: 14px; }
+    dl div { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); }
+    dt { color: var(--muted); }
+    dd { margin: 0; text-align: right; }
+    .warning { color: var(--warning); }
+    .chart-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    canvas { width: 100%; height: 270px; display: block; margin-top: 12px; }
+    #reading { font-size: 14px; }
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: 1fr; }
+      canvas { height: 235px; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div><h1>FaultWatch</h1><p>Simulated C-MAPSS FD001 telemetry</p></div>
+  <a href="/docs">API docs</a>
+</header>
+<main>
+  <div>
+    <label for="engine">Engine</label>
+    <select id="engine" disabled><option value="">Waiting for data</option></select>
+  </div>
+  <p id="message" role="status">Start a replay to see engine telemetry.</p>
+  <div class="grid">
+    <section>
+      <h2>Remaining useful life</h2>
+      <div class="readout"><output id="rul">—</output> cycles</div>
+      <p id="prediction">Waiting for telemetry</p>
+      <dl>
+        <div><dt>Prediction cycle</dt><dd id="cycle">—</dd></div>
+        <div><dt>Model version</dt><dd id="model">—</dd></div>
+        <div><dt>Demo threshold</dt><dd id="threshold"></dd></div>
+      </dl>
+    </section>
+    <section>
+      <div class="chart-head">
+        <h2>Sensor history</h2>
+        <div><label for="sensor">Sensor</label><select id="sensor"></select></div>
+      </div>
+      <canvas id="plot" role="img" aria-label="Selected sensor reading by engine cycle"></canvas>
+      <p id="reading"></p>
+    </section>
+  </div>
+</main>
+<script>
+  const element = id => document.getElementById(id);
+  const engine = element("engine");
+  const sensor = element("sensor");
+  const message = element("message");
+  const chart = element("plot");
+  const threshold = 30;
+  const number = new Intl.NumberFormat("en", { maximumSignificantDigits: 6 });
+  let rows = [];
+  let request = 0;
+
+  element("threshold").textContent = `${threshold} cycles`;
+  for (let index = 0; index < 21; index++) sensor.add(new Option(index + 1, index));
+  sensor.value = "1";
+
+  function draw() {
+    const { width, height } = chart.getBoundingClientRect();
+    const ratio = window.devicePixelRatio;
+    chart.width = Math.round(width * ratio);
+    chart.height = Math.round(height * ratio);
+    if (!rows.length) {
+      element("reading").textContent = "";
+      return;
+    }
+
+    const context = chart.getContext("2d");
+    context.scale(ratio, ratio);
+    const values = rows.map(row => row.sensors[Number(sensor.value)]);
+    let low = Math.min(...values);
+    let high = Math.max(...values);
+    if (low === high) {
+      const padding = Math.abs(low) * .01 || 1;
+      low -= padding;
+      high += padding;
+    }
+    const start = rows[0].cycle;
+    const end = rows.at(-1).cycle;
+    const left = 59, right = width - 14, top = 10, bottom = height - 28;
+    const x = cycle => start === end ? left + (right - left) / 2 :
+      left + (cycle - start) * (right - left) / (end - start);
+    const y = value => bottom - (value - low) * (bottom - top) / (high - low);
+
+    context.font = "12px system-ui";
+    context.textAlign = "right";
+    context.textBaseline = "middle";
+    context.fillStyle = "#a4b5be";
+    context.strokeStyle = "#2c404a";
+    for (let tick = 0; tick <= 4; tick++) {
+      const value = low + tick * (high - low) / 4;
+      const lineY = y(value);
+      context.beginPath();
+      context.moveTo(left, lineY);
+      context.lineTo(right, lineY);
+      context.stroke();
+      context.fillText(number.format(value), left - 7, lineY, left - 8);
+    }
+    context.textAlign = "center";
+    const ticks = Math.min(4, end - start);
+    for (let tick = 0; tick <= ticks; tick++) {
+      const cycle = ticks ? Math.round(start + tick * (end - start) / ticks) : start;
+      context.fillText(cycle, x(cycle), bottom + 15);
+    }
+
+    context.strokeStyle = "#86e6c7";
+    context.lineWidth = 2;
+    context.beginPath();
+    rows.forEach(({ cycle }, index) => {
+      const pointY = y(values[index]);
+      if (rows[index - 1]?.cycle === cycle - 1) context.lineTo(x(cycle), pointY);
+      else context.moveTo(x(cycle), pointY);
+    });
+    context.stroke();
+    context.fillStyle = "#86e6c7";
+    context.beginPath();
+    context.arc(x(end), y(values.at(-1)), 3.5, 0, 2 * Math.PI);
+    context.fill();
+    element("reading").textContent = `Cycle ${end} · Latest reading ${number.format(values.at(-1))}`;
+  }
+
+  async function get(path, allowUnavailable = false) {
+    const response = await fetch(path);
+    if (allowUnavailable && response.status === 503) return null;
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
+  }
+
+  function showPrediction(result) {
+    const ready = result?.status === "ready";
+    element("rul").textContent = ready ? result.predicted_rul_cycles.toFixed(1) : "—";
+    element("model").textContent = result?.model_version ?? "—";
+    element("cycle").textContent = result?.cycle ?? "—";
+    const details = element("prediction");
+    const watch = ready && result.predicted_rul_cycles <= threshold;
+    details.classList.toggle("warning", watch);
+    if (!result) details.textContent = rows.length ? "Model unavailable" : "Waiting for telemetry";
+    else if (!ready) {
+      details.textContent = `${result.available_cycles} of ${result.required_cycles} consecutive cycles`;
+    } else {
+      details.textContent = watch ? "At or below demo threshold" : "Above demo threshold";
+    }
+  }
+
+  async function refresh() {
+    const current = ++request;
+    try {
+      const engines = await get("/v1/engines");
+      if (current !== request) return;
+      if (!engines.length) {
+        message.textContent = "Start a replay to see engine telemetry.";
+        message.hidden = false;
+        engine.replaceChildren(new Option("Waiting for data", ""));
+        engine.disabled = true;
+        rows = [];
+        showPrediction(null);
+        draw();
+        return;
+      }
+      const ids = engines.map(item => String(item.engine_id));
+      if (ids.join() !== Array.from(engine.options, option => option.value).join()) {
+        const selected = engine.value;
+        engine.replaceChildren(...ids.map(id => new Option(id, id)));
+        if (ids.includes(selected)) engine.value = selected;
+      }
+      engine.disabled = false;
+      const root = `/v1/engines/${encodeURIComponent(engine.value)}`;
+      const [history, prediction] = await Promise.all([
+        get(`${root}/history`), get(`${root}/prediction`, true)
+      ]);
+      if (current !== request) return;
+      rows = history;
+      showPrediction(prediction);
+      draw();
+      message.hidden = true;
+    } catch {
+      if (current !== request) return;
+      message.textContent = "Telemetry unavailable. Retrying…";
+      message.hidden = false;
+    }
+  }
+
+  engine.addEventListener("change", refresh);
+  sensor.addEventListener("change", draw);
+  new ResizeObserver(draw).observe(chart);
+  refresh();
+  setInterval(refresh, 2500);
+</script>
+</body>
+</html>
