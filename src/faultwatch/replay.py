@@ -11,9 +11,7 @@ from faultwatch.data import ENGINE, read_fd001_telemetry, verify_fd001
 DEFAULT_ENGINES = (1, 2, 3)
 
 
-def replay_fd001(data: Path, base_url: str, engines: list[int] | None, rate: float) -> dict:
-    if not math.isfinite(rate) or rate < 0:
-        raise ValueError("--rate must be finite and nonnegative")
+def replay_events(data: Path, engines: list[int] | None):
     test_file = "test_FD001.txt"
     verify_fd001(data, test_file)
     frame = read_fd001_telemetry(data / test_file)
@@ -23,30 +21,36 @@ def replay_fd001(data: Path, base_url: str, engines: list[int] | None, rate: flo
         raise ValueError(f"FD001 test engines not found: {sorted(missing)}")
     rows = frame.loc[frame[ENGINE].isin(selected)]
 
+    for engine_id, cycle, *values in rows.itertuples(index=False, name=None):
+        yield {
+            "engine_id": engine_id,
+            "cycle": cycle,
+            "settings": values[:3],
+            "sensors": values[3:],
+        }
+
+
+def replay_fd001(data: Path, base_url: str, engines: list[int] | None, rate: float) -> dict:
+    if not math.isfinite(rate) or rate < 0:
+        raise ValueError("--rate must be finite and nonnegative")
+    selected = set()
     counts = {"created": 0, "duplicate": 0}
     interval = 1 / rate if rate else 0
     next_send = monotonic()
     try:
         with httpx2.Client(base_url=base_url, timeout=5, trust_env=False) as client:
-            for engine_id, cycle, *values in rows.itertuples(index=False, name=None):
+            for event in replay_events(data, engines):
+                selected.add(event["engine_id"])
                 wait = next_send - monotonic()
                 if wait > 0:
                     sleep(wait)
                 next_send = monotonic() + interval
-                response = client.post(
-                    "/v1/telemetry",
-                    json={
-                        "engine_id": engine_id,
-                        "cycle": cycle,
-                        "settings": values[:3],
-                        "sensors": values[3:],
-                    },
-                )
+                response = client.post("/v1/telemetry", json=event)
                 response.raise_for_status()
                 status = response.json().get("status")
                 if status not in counts:
                     raise ValueError(
-                        f"Unexpected ingest response for engine {engine_id}, cycle {cycle}"
+                        f"Unexpected ingest response for engine {event['engine_id']}, cycle {event['cycle']}"
                     )
                 counts[status] += 1
     except (httpx2.HTTPError, httpx2.InvalidURL) as error:

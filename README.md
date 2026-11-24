@@ -96,6 +96,22 @@ Use Terraform 1.17 and a trained bundle. The lab uses Moto, fixed local
 credentials, and a loopback-only endpoint. See the [apply and teardown results](reports/s3-lab.json).
 A live AWS deployment requires an eligible account and separate approval.
 
+## Kafka replay
+
+Start the optional single-node broker with `docker compose --profile kafka up --wait kafka`.
+With the Compose database running and the [FD001 data](docs/dataset.md) fetched:
+
+```sh
+export FAULTWATCH_DATABASE_URL=postgresql+psycopg://faultwatch:faultwatch-local@127.0.0.1:55433/faultwatch
+uv run --locked --group kafka python -m faultwatch.kafka_replay publish
+uv run --locked --group kafka python -m faultwatch.kafka_replay consume
+```
+
+Engine IDs are partition keys. The worker commits offsets after the database
+transaction and accepts identical retries. The direct HTTP replay remains
+available. Run `uv run --locked --group kafka python scripts/kafka_lab.py`
+for the [restart and repeat-delivery check](reports/kafka-replay.json).
+
 ## Results
 
 One prediction per engine on 100 held-out NASA test trajectories. Errors are

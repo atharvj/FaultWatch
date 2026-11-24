@@ -76,3 +76,12 @@ against Moto 5.2.6. All four public-access blocks and AES256 configuration
 were verified through the AWS SDK. Two artifacts were restored with
 matching checksums and the bucket count returned to zero after destroy.
 [Lab result](../reports/s3-lab.json)
+
+## Kafka replay correctness
+
+The KRaft broker accepted 80 real FD001 messages. A consumer stopped after
+25 commits, and a new consumer in the same group resumed for the remaining
+55. A second publication returned 80 duplicates and zero inserts. PostgreSQL
+retained 31 and 49 cycles in order for engines 1 and 2. This lab measures
+ordering and repeated delivery on a single broker.
+[Replay results](../reports/kafka-replay.json)

@@ -1,0 +1,31 @@
+{
+  "published": 80,
+  "first_consumer": {
+    "counts": {
+      "created": 25,
+      "duplicate": 0
+    },
+    "engine_partitions": {
+      "1": 2
+    }
+  },
+  "restarted_consumer": {
+    "counts": {
+      "created": 55,
+      "duplicate": 0
+    },
+    "engine_partitions": {
+      "1": 2,
+      "2": 1
+    }
+  },
+  "second_publication": {
+    "created": 0,
+    "duplicate": 80
+  },
+  "stored_cycles_by_engine": {
+    "1": 31,
+    "2": 49
+  },
+  "engine_order_verified": true
+}
