@@ -1,0 +1,19 @@
+[project]
+name = "faultwatch"
+version = "0.1.0"
+description = "Remaining useful life prediction on NASA C-MAPSS simulations"
+requires-python = ">=3.11,<3.12"
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest>=8.4,<10", "ruff>=0.15,<0.16"]
+
+[build-system]
+requires = ["uv_build>=0.11,<0.12"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100

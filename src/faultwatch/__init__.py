@@ -1,0 +1,1 @@
+"""FaultWatch predictive maintenance prototype."""
