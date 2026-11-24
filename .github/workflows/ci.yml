@@ -31,3 +31,108 @@ jobs:
       - run: uv run --locked --group experiments pytest -q tests/test_experiments.py
       - if: always()
         run: docker compose down --volumes
+
+  kafka:
+    name: Kafka replay
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      FAULTWATCH_DATABASE_URL: postgresql+psycopg://faultwatch:faultwatch-local@127.0.0.1:55433/faultwatch
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
+        with:
+          version: "0.11.24"
+          enable-cache: false
+      - run: uv run --locked --group kafka faultwatch fetch
+      - run: docker compose --profile kafka up --wait --wait-timeout 120 db kafka
+      - run: uv run --locked --group kafka python scripts/kafka_lab.py
+      - if: failure()
+        run: docker compose --profile kafka logs --tail=150 db kafka
+      - if: always()
+        run: docker compose --profile kafka down --volumes
+
+  spark:
+    name: Spark Parquet parity
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
+        with:
+          version: "0.11.24"
+          enable-cache: false
+      - run: uv run --locked --group spark faultwatch fetch
+      - name: Materialize and verify Parquet
+        run: |
+          export JAVA_HOME="$JAVA_HOME_21_X64"
+          export PATH="$JAVA_HOME/bin:$PATH"
+          uv run --locked --group spark python scripts/spark_features.py --output "$RUNNER_TEMP/fd001-parquet"
+
+  terraform:
+    name: Terraform S3 validation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      TF_IN_AUTOMATION: "true"
+      CHECKPOINT_DISABLE: "1"
+      AWS_EC2_METADATA_DISABLED: "true"
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - name: Install Terraform 1.17.2
+        run: |
+          cd "$RUNNER_TEMP"
+          curl -fsSL --retry 3 -o terraform.zip https://releases.hashicorp.com/terraform/1.17.2/terraform_1.17.2_linux_amd64.zip
+          echo "e6f16b2f0b137ee5729caa8c4e79a3bae4ee261acd198a1fcfa8584a6296605b  terraform.zip" | sha256sum -c -
+          mkdir terraform-bin
+          unzip -q terraform.zip terraform -d terraform-bin
+          echo "$RUNNER_TEMP/terraform-bin" >> "$GITHUB_PATH"
+      - name: Validate the module and test the endpoint guard
+        working-directory: infra/terraform/s3
+        run: |
+          terraform fmt -check -recursive
+          terraform init -input=false -backend=false -lockfile=readonly
+          terraform validate -no-color
+          terraform test -no-color
+
+  helm:
+    name: Helm lifecycle on kind
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
+        with:
+          version: "0.11.24"
+          enable-cache: false
+      - name: Install Helm 4.3.2 and kubectl 1.34.3
+        run: |
+          cd "$RUNNER_TEMP"
+          mkdir cluster-bin
+          curl -fsSL --retry 3 -o helm.tar.gz https://get.helm.sh/helm-v4.3.2-linux-amd64.tar.gz
+          echo "d1c0278d46beab79582d7e50f5b3dc206944ba8e577cde618513fd07daa53983  helm.tar.gz" | sha256sum -c -
+          tar -xzf helm.tar.gz -C cluster-bin --strip-components=1 linux-amd64/helm
+          curl -fsSL --retry 3 -o cluster-bin/kubectl https://dl.k8s.io/release/v1.34.3/bin/linux/amd64/kubectl
+          echo "ab60ca5f0fd60c1eb81b52909e67060e3ba0bd27e55a8ac147cbc2172ff14212  cluster-bin/kubectl" | sha256sum -c -
+          chmod +x cluster-bin/kubectl
+          echo "$RUNNER_TEMP/cluster-bin" >> "$GITHUB_PATH"
+      - name: Train the model and start kind
+        env:
+          LOKY_MAX_CPU_COUNT: "2"
+        run: |
+          uv run --locked faultwatch fetch
+          uv run --locked faultwatch train
+          make kind-up
+      - run: sh scripts/helm_lab.sh
+      - if: failure()
+        run: kubectl --kubeconfig .local/kubeconfig -n faultwatch describe pods
+      - if: always()
+        run: kind delete cluster --name faultwatch
