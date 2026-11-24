@@ -137,6 +137,13 @@ uv run --locked --group rag python scripts/rag.py evaluate
 The one-time fetch downloads public model weights. Indexing and questions
 run locally. [Evaluation results](reports/rag-evaluation.json)
 
+## Helm deployment
+
+After `make kind-up`, run `sh scripts/helm_lab.sh` with Helm and kubectl
+installed. The chart deploys a separate API release using the demo's existing
+PostgreSQL service and model mount. The check installs, upgrades, verifies
+readiness and removes its temporary release. [Release results](reports/helm-lab.json)
+
 ## Results
 
 One prediction per engine on 100 held-out NASA test trajectories. Errors are

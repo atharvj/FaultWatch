@@ -101,3 +101,10 @@ documentation, pgvector retrieved the expected source in the top three
 for all five. FLAN-T5 returned five correct answers with citations and
 abstained on both unrelated questions. This checks the local workflow
 on seven examples. [Questions and results](../reports/rag-evaluation.json)
+
+## Helm lifecycle
+
+On the local kind cluster, Helm 4.3.2 installed the API chart and upgraded its
+CPU request to 300m. Both revisions returned HTTP 200 from the readiness
+probe. The test released its resources and both original workloads stayed
+ready. [Release verification](../reports/helm-lab.json)

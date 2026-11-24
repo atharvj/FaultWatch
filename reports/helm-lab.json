@@ -1,0 +1,21 @@
+{
+  "helm": "4.3.2",
+  "chart": "faultwatch-0.1.0",
+  "cluster": "kind-faultwatch",
+  "lint": "passed",
+  "readyz_after_install": 200,
+  "readyz_after_upgrade": 200,
+  "api_cpu_request_after_upgrade": "300m",
+  "revisions": [
+    {
+      "revision": 1,
+      "status": "superseded"
+    },
+    {
+      "revision": 2,
+      "status": "deployed"
+    }
+  ],
+  "temporary_release_removed": true,
+  "existing_api_and_database_ready": true
+}
