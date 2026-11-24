@@ -30,6 +30,7 @@ aws = ["boto3>=1.44,<2", "moto[server]>=5.2,<6"]
 kafka = ["confluent-kafka>=2.14,<3"]
 spark = ["pyspark>=4.2,<5"]
 rag = ["transformers>=4.57,<5", "pgvector>=0.4,<1", "sentencepiece>=0.2,<1"]
+xgboost = ["xgboost>=3.1,<4"]
 experiments = [
     "mlflow-skinny>=3.10,<4",
     "onnx>=1.18,<2",

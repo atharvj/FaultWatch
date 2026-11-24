@@ -108,3 +108,12 @@ On the local kind cluster, Helm 4.3.2 installed the API chart and upgraded its
 CPU request to 300m. Both revisions returned HTTP 200 from the readiness
 probe. The test released its resources and both original workloads stayed
 ready. [Release verification](../reports/helm-lab.json)
+
+## XGBoost
+
+XGBoost 3.2.0 trained a two-thread CPU histogram regressor on the original
+FD001 splits and 64 causal features. Across 300 validation cutoffs,
+MAE/RMSE were 25.24/34.52 cycles. Across 100 official test endpoints,
+MAE/RMSE were 18.58/25.55. The MLP remains the serving model based on its
+23.28-cycle validation MAE. Reloading the XGBoost UBJSON model reproduced
+every test prediction exactly. [Scores and parameters](../reports/xgboost-fd001.json)

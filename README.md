@@ -144,6 +144,14 @@ installed. The chart deploys a separate API release using the demo's existing
 PostgreSQL service and model mount. The check installs, upgrades, verifies
 readiness and removes its temporary release. [Release results](reports/helm-lab.json)
 
+## XGBoost comparison
+
+Run `uv run --locked --group xgboost python scripts/xgb_compare.py` to
+fit a CPU histogram model on the same grouped validation folds and test
+endpoints as the original candidates. XGBoost requires OpenMP on macOS
+(`brew install libomp`). The experiment saves a UBJSON model and verifies
+that reload preserves every test prediction. [Full results](reports/xgboost-fd001.json)
+
 ## Results
 
 One prediction per engine on 100 held-out NASA test trajectories. Errors are
@@ -154,6 +162,7 @@ in cycles.
 | Median baseline | 36.32 | 45.08 |
 | Boosted trees | **18.28** | **24.77** |
 | PyTorch MLP (default) | 19.35 | 25.76 |
+| XGBoost | 18.58 | 25.55 |
 
 The MLP had the lowest MAE across three validation folds split by engine. The
 boosted trees had the lowest test error. See the [evaluation protocol](docs/model_card.md)
