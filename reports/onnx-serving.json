@@ -1,0 +1,194 @@
+{
+  "host": "Apple M2 Pro, Docker Desktop linux/arm64",
+  "docker_image_id": "sha256:ecb9a06d492e479564b3a27fa340aaf5140f44027543a000f9f94f872555f998",
+  "model_version": "fd001-v1",
+  "onnx_graph_sha256": "2cbc6a82aec6abe960b724f086df3934a1891f3c16f897fd3ffde1f7e3259ec7",
+  "onnxruntime": "1.32.0",
+  "pytorch": "2.12.1+cpu",
+  "telemetry_rows": 206,
+  "engine_ids": [
+    1,
+    2,
+    3
+  ],
+  "redis_enabled": false,
+  "prediction_route_weight": 0.6,
+  "max_absolute_http_prediction_difference_cycles": 1.52587890625e-05,
+  "prediction_tolerance_cycles": 0.0001,
+  "backend_averages": {
+    "torch": {
+      "requests_per_second": 204.385,
+      "prediction_p95_ms": 68.885
+    },
+    "onnx": {
+      "requests_per_second": 225.43,
+      "prediction_p95_ms": 60.569
+    }
+  },
+  "onnx_change_percent": {
+    "requests_per_second": 10.3,
+    "prediction_p95_ms": -12.07
+  },
+  "trials": [
+    {
+      "backend": "torch",
+      "workers": 8,
+      "target_seconds": 30,
+      "elapsed_seconds": 30.092,
+      "total": {
+        "requests": 6069,
+        "errors": 0,
+        "error_rate": 0.0,
+        "requests_per_second": 201.68,
+        "p50_ms": 37.738,
+        "p95_ms": 65.846
+      },
+      "routes": {
+        "/v1/engines/{engine}/prediction": {
+          "requests": 3642,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 121.03,
+          "p50_ms": 42.967,
+          "p95_ms": 69.56
+        },
+        "/v1/engines/{engine}/history?limit=20": {
+          "requests": 1215,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 40.38,
+          "p50_ms": 28.867,
+          "p95_ms": 51.422
+        },
+        "/v1/engines": {
+          "requests": 1212,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 40.28,
+          "p50_ms": 29.125,
+          "p95_ms": 48.335
+        }
+      }
+    },
+    {
+      "backend": "onnx",
+      "workers": 8,
+      "target_seconds": 30,
+      "elapsed_seconds": 30.032,
+      "total": {
+        "requests": 6670,
+        "errors": 0,
+        "error_rate": 0.0,
+        "requests_per_second": 222.1,
+        "p50_ms": 33.623,
+        "p95_ms": 60.029
+      },
+      "routes": {
+        "/v1/engines/{engine}/prediction": {
+          "requests": 4004,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 133.33,
+          "p50_ms": 36.053,
+          "p95_ms": 61.709
+        },
+        "/v1/engines/{engine}/history?limit=20": {
+          "requests": 1333,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 44.39,
+          "p50_ms": 29.734,
+          "p95_ms": 55.583
+        },
+        "/v1/engines": {
+          "requests": 1333,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 44.39,
+          "p50_ms": 29.339,
+          "p95_ms": 54.605
+        }
+      }
+    },
+    {
+      "backend": "onnx",
+      "workers": 8,
+      "target_seconds": 30,
+      "elapsed_seconds": 30.031,
+      "total": {
+        "requests": 6870,
+        "errors": 0,
+        "error_rate": 0.0,
+        "requests_per_second": 228.76,
+        "p50_ms": 33.133,
+        "p95_ms": 56.455
+      },
+      "routes": {
+        "/v1/engines/{engine}/prediction": {
+          "requests": 4125,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 137.36,
+          "p50_ms": 35.191,
+          "p95_ms": 59.428
+        },
+        "/v1/engines/{engine}/history?limit=20": {
+          "requests": 1372,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 45.69,
+          "p50_ms": 29.445,
+          "p95_ms": 51.22
+        },
+        "/v1/engines": {
+          "requests": 1373,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 45.72,
+          "p50_ms": 28.767,
+          "p95_ms": 50.497
+        }
+      }
+    },
+    {
+      "backend": "torch",
+      "workers": 8,
+      "target_seconds": 30,
+      "elapsed_seconds": 30.036,
+      "total": {
+        "requests": 6220,
+        "errors": 0,
+        "error_rate": 0.0,
+        "requests_per_second": 207.09,
+        "p50_ms": 36.707,
+        "p95_ms": 63.531
+      },
+      "routes": {
+        "/v1/engines/{engine}/prediction": {
+          "requests": 3732,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 124.25,
+          "p50_ms": 41.977,
+          "p95_ms": 68.21
+        },
+        "/v1/engines/{engine}/history?limit=20": {
+          "requests": 1245,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 41.45,
+          "p50_ms": 28.034,
+          "p95_ms": 48.476
+        },
+        "/v1/engines": {
+          "requests": 1243,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 41.38,
+          "p50_ms": 27.498,
+          "p95_ms": 49.69
+        }
+      }
+    }
+  ]
+}

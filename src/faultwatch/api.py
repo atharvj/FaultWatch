@@ -28,6 +28,7 @@ from faultwatch.metrics import Metrics, RequestMetrics
 logger = logging.getLogger(__name__)
 MAX_KEY = 2_147_483_647
 MODEL_ENV = "FAULTWATCH_MODEL_DIR"
+BACKEND_ENV = "FAULTWATCH_BACKEND"
 DEFAULT_MODEL_DIR = Path("artifacts") / MODEL_VERSION
 
 PositiveKey = Annotated[int, Field(strict=True, ge=1, le=MAX_KEY)]
@@ -80,6 +81,7 @@ def _database(request: Request) -> Engine:
 def create_app(
     database: str | URL | None = None, model_dir: Path | None = None, cache_url: str | None = None
 ) -> FastAPI:
+    backend = os.getenv(BACKEND_ENV, "torch")
     database = database or os.getenv(DATABASE_ENV)
     cache_url = cache_url or os.getenv(CACHE_ENV)
     model_dir = (
@@ -90,7 +92,15 @@ def create_app(
     async def lifespan(app: FastAPI):
         app.state.database = connect_database(database) if database else None
         try:
-            app.state.predictor = load_predictor(model_dir)
+            if backend == "onnx":
+                from faultwatch.onnx_inference import load_onnx_predictor
+
+                app.state.predictor = load_onnx_predictor(model_dir)
+            elif backend == "torch":
+                app.state.predictor = load_predictor(model_dir)
+            else:
+                raise ValueError(f"Unsupported inference backend: {backend}")
+            metrics.model.info({"backend": backend, "version": app.state.predictor.model_version})
         except (OSError, ValueError) as error:
             logger.warning("Model bundle unavailable: %s", error)
             app.state.predictor = None

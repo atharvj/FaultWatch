@@ -16,8 +16,8 @@ from torch import nn
 from faultwatch.features import FEATURE_COLUMNS
 from faultwatch.inference import load_manifest, load_model
 from faultwatch.models import TARGET_SCALE, TorchMLP, predict_cycles
+from faultwatch.onnx_inference import THREADS, session_options
 
-THREADS = 2
 WARMUP = 30
 OPSET = 18
 ATOL = 1e-4
@@ -53,7 +53,8 @@ def _measure(predict, repeats: int) -> dict:
 def export_and_validate(
     bundle: Path, output: Path, features: pd.DataFrame, repeats: int = 300
 ) -> dict:
-    if output.exists():
+    checksum = output.with_suffix(output.suffix + ".sha256")
+    if output.exists() or checksum.exists():
         raise FileExistsError(f"{output} already exists. Choose a new --output file.")
     if repeats < 1 or features.empty:
         raise ValueError("ONNX verification needs at least one repetition and feature row")
@@ -87,16 +88,16 @@ def export_and_validate(
             proto,
             {
                 "model_version": manifest["model_version"],
+                "source_artifact_sha256": manifest["artifact_sha256"]["torch_mlp"],
                 "feature_columns": json.dumps(FEATURE_COLUMNS),
                 "target_unit": "cycles",
             },
         )
         onnx.checker.check_model(proto)
         onnx.save(proto, path)
-        options = ort.SessionOptions()
-        options.intra_op_num_threads = THREADS
-        options.inter_op_num_threads = 1
-        session = ort.InferenceSession(str(path), options, providers=["CPUExecutionProvider"])
+        session = ort.InferenceSession(
+            str(path), session_options(), providers=["CPUExecutionProvider"]
+        )
         observed = session.run(["rul_cycles"], {"features": values})[0]
         np.testing.assert_allclose(observed, expected, atol=ATOL, rtol=RTOL)
         np.testing.assert_allclose(
@@ -122,7 +123,11 @@ def export_and_validate(
                     "onnxruntime": _measure(run_ort, repeats),
                 }
 
+        digest = sha256(path.read_bytes()).hexdigest()
+        proof = Path(temp) / "model.sha256"
+        proof.write_text(digest + "\n")
         output.hardlink_to(path)
+        checksum.hardlink_to(proof)
 
     return {
         "model": "torch_mlp",
@@ -133,7 +138,7 @@ def export_and_validate(
         "pytorch": torch.__version__,
         "cpu_threads": THREADS,
         "artifact_bytes": output.stat().st_size,
-        "artifact_sha256": sha256(output.read_bytes()).hexdigest(),
+        "artifact_sha256": digest,
         "samples": len(values),
         "max_absolute_difference_cycles": float(np.max(np.abs(observed - expected))),
         "tolerance_cycles": {"atol": ATOL, "rtol": RTOL},

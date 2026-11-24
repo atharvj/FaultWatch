@@ -82,6 +82,17 @@ uv run --locked --group experiments faultwatch export-onnx
 MLflow keeps the fitted candidates, parameters and scores in a local store.
 ONNX export checks the graph against PyTorch on the official test endpoints.
 
+Serve the exported graph with ONNX Runtime in Compose:
+
+```sh
+uv run --locked --group experiments faultwatch export-onnx --output artifacts/fd001-v1/model.onnx
+FAULTWATCH_BACKEND=onnx docker compose up --build --wait api
+curl -fsS http://127.0.0.1:8000/metrics | grep faultwatch_model_info
+```
+
+The graph and its checksum live alongside the model manifest. Compose defaults
+to PyTorch. [Live HTTP comparison](reports/onnx-serving.json)
+
 ## Artifact storage
 
 The [Terraform lab](infra/terraform/s3) provisions an S3-compatible bucket on
@@ -123,8 +134,8 @@ reads them back and checks every feature against the pandas pipeline.
 ## Ask the documentation
 
 The local Q&A tool retrieves public project passages from PostgreSQL with
-pgvector. It generates a short answer with MiniLM embeddings and FLAN-T5,
-and returns the source passage or abstains.
+MiniLM embeddings and pgvector. FLAN-T5 answers with a quote and a citation
+or abstains.
 
 ```sh
 docker compose --profile rag up --wait rag-db

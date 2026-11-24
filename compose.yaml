@@ -37,6 +37,7 @@ services:
     environment:
       <<: *app-env
       FAULTWATCH_REDIS_URL: ${FAULTWATCH_REDIS_URL:-}
+      FAULTWATCH_BACKEND: ${FAULTWATCH_BACKEND:-torch}
     depends_on:
       migrate:
         condition: service_completed_successfully

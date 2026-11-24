@@ -117,3 +117,32 @@ MAE/RMSE were 25.24/34.52 cycles. Across 100 official test endpoints,
 MAE/RMSE were 18.58/25.55. The MLP remains the serving model based on its
 23.28-cycle validation MAE. Reloading the XGBoost UBJSON model reproduced
 every test prediction exactly. [Scores and parameters](../reports/xgboost-fd001.json)
+
+## ONNX Runtime over HTTP
+
+The same Linux arm64 Compose image ran four 30-second trials on an M2 Pro
+with eight clients, 206 PostgreSQL readings and no concurrent ingest.
+The client sent 60% prediction requests and split the rest between history
+and engine listings. Redis was disabled for every trial. Only the configured
+prediction backend changed.
+
+| Trial | Runtime | All requests/s | Prediction p95 (ms) | Failures |
+|---|---|---:|---:|---:|
+| 1 | PyTorch | 201.68 | 69.56 | 0 |
+| 2 | ONNX Runtime | 222.10 | 61.71 | 0 |
+| 3 | ONNX Runtime | 228.76 | 59.43 | 0 |
+| 4 | PyTorch | 207.09 | 68.21 | 0 |
+
+Mean trial prediction p95 fell 12.1%, from 68.89 to 60.57 ms. Mean throughput
+rose 10.3%, from 204.39 to 225.43 requests/s. Predictions for the three
+engines agreed within 1.53e-05 cycles over HTTP. The requests include
+database reads and feature extraction. These results describe one local
+workload. [All trials](../reports/onnx-serving.json)
+
+To repeat after exporting the serving graph and replaying engines 1–3,
+run this sequence once for each backend in the table.
+
+```sh
+FAULTWATCH_BACKEND=onnx FAULTWATCH_REDIS_URL= docker compose up --wait api
+make benchmark
+```

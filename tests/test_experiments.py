@@ -1,15 +1,23 @@
 import json
+from shutil import copy2
 
+import numpy as np
 import pytest
+from fastapi.testclient import TestClient
 
+from faultwatch.api import create_app
 from faultwatch.features import FEATURE_COLUMNS, causal_features
+from faultwatch.inference import load_predictor
 from faultwatch.models import MODEL_PARAMS, SEED
 
 
-def test_onnx_export_matches_torch_for_dynamic_batches(tmp_path, model_bundle, trajectories):
+def test_onnx_export_matches_torch_for_dynamic_batches(
+    tmp_path, model_bundle, trajectories, monkeypatch
+):
     ort = pytest.importorskip("onnxruntime")
     pytest.importorskip("onnxscript")
     from faultwatch.onnx_export import export_and_validate
+    from faultwatch.onnx_inference import load_onnx_predictor
 
     bundle, _ = model_bundle
     features = causal_features(trajectories, latest_only=True)
@@ -24,6 +32,28 @@ def test_onnx_export_matches_torch_for_dynamic_batches(tmp_path, model_bundle, t
     assert json.loads(session.get_modelmeta().custom_metadata_map["feature_columns"]) == list(
         FEATURE_COLUMNS
     )
+    copy2(bundle / "manifest.json", tmp_path)
+    predictor = load_onnx_predictor(tmp_path)
+    torch_predictor = load_predictor(bundle)
+    np.testing.assert_allclose(
+        predictor.predict_latest(trajectories),
+        torch_predictor.predict_latest(trajectories),
+        atol=1e-4,
+    )
+    assert predictor.artifact_sha256 != torch_predictor.artifact_sha256
+
+    monkeypatch.setenv("FAULTWATCH_BACKEND", "onnx")
+    with TestClient(create_app(model_dir=tmp_path)) as client:
+        assert (
+            'faultwatch_model_info{backend="onnx",version="fd001-v1"}'
+            in client.get("/metrics").text
+        )
+
+    path.with_suffix(".onnx.sha256").write_text("wrong checksum\n")
+    with pytest.raises(ValueError, match="checksum mismatch"):
+        load_onnx_predictor(tmp_path)
+    with TestClient(create_app(model_dir=tmp_path)) as client:
+        assert client.get("/readyz").status_code == 503
 
 
 def test_mlflow_persists_scores_and_artifacts(tmp_path, model_bundle):

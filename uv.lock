@@ -442,6 +442,7 @@ dependencies = [
     { name = "fastapi" },
     { name = "httpx2" },
     { name = "numpy" },
+    { name = "onnxruntime" },
     { name = "pandas" },
     { name = "prometheus-client" },
     { name = "psycopg", extra = ["binary"] },
@@ -468,7 +469,6 @@ dev = [
 experiments = [
     { name = "mlflow-skinny" },
     { name = "onnx" },
-    { name = "onnxruntime" },
     { name = "onnxscript" },
 ]
 kafka = [
@@ -492,6 +492,7 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.115,<1" },
     { name = "httpx2", specifier = ">=2.16,<3" },
     { name = "numpy", specifier = ">=2.2,<3" },
+    { name = "onnxruntime", specifier = ">=1.22,<2" },
     { name = "pandas", specifier = ">=2.3,<3" },
     { name = "prometheus-client", specifier = ">=0.22,<1" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2,<4" },
@@ -518,7 +519,6 @@ dev = [
 experiments = [
     { name = "mlflow-skinny", specifier = ">=3.10,<4" },
     { name = "onnx", specifier = ">=1.18,<2" },
-    { name = "onnxruntime", specifier = ">=1.22,<2" },
     { name = "onnxscript", specifier = ">=0.5,<1" },
 ]
 kafka = [{ name = "confluent-kafka", specifier = ">=2.14,<3" }]

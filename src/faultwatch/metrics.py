@@ -2,7 +2,7 @@
 
 from time import perf_counter
 
-from prometheus_client import CollectorRegistry, Counter, Histogram
+from prometheus_client import CollectorRegistry, Counter, Histogram, Info
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 DURATION_BUCKETS = (0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5)
@@ -13,6 +13,7 @@ PROBE_PATHS = {"/metrics", "/healthz", "/readyz"}
 class Metrics:
     def __init__(self) -> None:
         self.registry = CollectorRegistry()
+        self.model = Info("faultwatch_model", "Active inference runtime", registry=self.registry)
         self.requests = Counter(
             "faultwatch_http_requests",
             "HTTP requests by method, route template and status.",
