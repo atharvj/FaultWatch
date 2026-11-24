@@ -47,6 +47,21 @@ database URL to include PostgreSQL tests.
 FAULTWATCH_TEST_DATABASE_URL=postgresql+psycopg://faultwatch:faultwatch-local@127.0.0.1:55433/faultwatch make test
 ```
 
+## Kubernetes
+
+For a local Kubernetes run, install [kind](https://kind.sigs.k8s.io/docs/user/quick-start/)
+and kubectl. With the model trained and Docker running, use:
+
+```sh
+make kind-up
+make kind-forward
+```
+
+In another terminal, run `make replay FAULTWATCH_PORT=18000` and open the
+[dashboard](http://127.0.0.1:18000). The single-node cluster uses a project-local
+kubeconfig, a read-only model mount and a PostgreSQL volume that survives pod
+replacement. `make kind-down` deletes the cluster and its local database.
+
 ## Results
 
 One prediction per engine on 100 held-out NASA test trajectories. Errors are

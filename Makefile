@@ -22,3 +22,17 @@ test:
 
 stop:
 	docker compose down
+
+KIND ?= kind
+KUBECTL = kubectl --kubeconfig .local/kubeconfig --context kind-faultwatch --namespace faultwatch
+
+.PHONY: kind-up kind-forward kind-down
+
+kind-up:
+	KIND="$(KIND)" ./infra/kind/up.sh
+
+kind-forward:
+	$(KUBECTL) port-forward --address 127.0.0.1 service/api 18000:8000
+
+kind-down:
+	$(KIND) delete cluster --name faultwatch --kubeconfig .local/kubeconfig
