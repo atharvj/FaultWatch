@@ -56,6 +56,9 @@ target_compile_options(faultwatch_engine PRIVATE -Wall -Wextra -Wpedantic)
 add_executable(faultwatch-native src/main.cpp)
 target_link_libraries(faultwatch-native PRIVATE faultwatch_engine)
 
+add_executable(faultwatch-native-bench benchmarks/features.cpp)
+target_link_libraries(faultwatch-native-bench PRIVATE faultwatch_engine)
+
 if(FAULTWATCH_BUILD_PYTHON)
     find_package(Python 3.11 REQUIRED COMPONENTS Interpreter Development.Module)
     FetchContent_Declare(pybind11

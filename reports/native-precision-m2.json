@@ -1,0 +1,154 @@
+{
+  "machine": "arm64",
+  "system": "Darwin",
+  "endpoints": 100,
+  "cpu_threads": 2,
+  "warmup_calls": 50,
+  "timed_calls": 300,
+  "variants": {
+    "mixed": {
+      "supported": true,
+      "model_bytes": 40834,
+      "nodes": [
+        "Cast",
+        "Clip",
+        "Div",
+        "Gemm",
+        "Mul",
+        "Relu",
+        "Squeeze",
+        "Sub"
+      ],
+      "mae_cycles": 19.351949820518495,
+      "rmse_cycles": 25.763907590319686,
+      "max_drift_from_serving_cycles": 0.0,
+      "runtime": "1.32.0",
+      "peak_process_rss_mib": 52.859375,
+      "batches": {
+        "1": {
+          "p50_us": 5.708,
+          "p95_us": 6.417,
+          "windows_per_second_at_p50": 175192.7119831815
+        },
+        "32": {
+          "p50_us": 17.042,
+          "p95_us": 19.04105,
+          "windows_per_second_at_p50": 1877713.883347025
+        },
+        "100": {
+          "p50_us": 25.291,
+          "p95_us": 38.9601,
+          "windows_per_second_at_p50": 3953975.7225890635
+        }
+      }
+    },
+    "fp64": {
+      "supported": true,
+      "model_bytes": 63919,
+      "nodes": [
+        "Clip",
+        "Div",
+        "Gemm",
+        "Mul",
+        "Relu",
+        "Squeeze",
+        "Sub"
+      ],
+      "mae_cycles": 19.35195212458955,
+      "rmse_cycles": 25.763911638093234,
+      "max_drift_from_serving_cycles": 3.3481067362117756e-05,
+      "runtime": "1.32.0",
+      "peak_process_rss_mib": 52.890625,
+      "batches": {
+        "1": {
+          "p50_us": 6.042,
+          "p95_us": 6.631250000000001,
+          "windows_per_second_at_p50": 165508.10989738497
+        },
+        "32": {
+          "p50_us": 18.833,
+          "p95_us": 24.2708,
+          "windows_per_second_at_p50": 1699145.1176127011
+        },
+        "100": {
+          "p50_us": 45.375,
+          "p95_us": 56.8771,
+          "windows_per_second_at_p50": 2203856.749311295
+        }
+      }
+    },
+    "fp32": {
+      "supported": true,
+      "model_bytes": 38180,
+      "nodes": [
+        "Clip",
+        "Div",
+        "Gemm",
+        "Mul",
+        "Relu",
+        "Squeeze",
+        "Sub"
+      ],
+      "mae_cycles": 19.355163478851317,
+      "rmse_cycles": 25.76449000287253,
+      "max_drift_from_serving_cycles": 0.105377197265625,
+      "runtime": "1.32.0",
+      "peak_process_rss_mib": 52.96875,
+      "batches": {
+        "1": {
+          "p50_us": 5.542,
+          "p95_us": 10.470550000000003,
+          "windows_per_second_at_p50": 180440.2742692169
+        },
+        "32": {
+          "p50_us": 16.1665,
+          "p95_us": 20.17115,
+          "windows_per_second_at_p50": 1979401.849503603
+        },
+        "100": {
+          "p50_us": 21.8545,
+          "p95_us": 27.0104,
+          "windows_per_second_at_p50": 4575716.671623693
+        }
+      }
+    },
+    "int8": {
+      "supported": true,
+      "model_bytes": 18600,
+      "nodes": [
+        "Add",
+        "Cast",
+        "Clip",
+        "Div",
+        "DynamicQuantizeLinear",
+        "MatMulInteger",
+        "Mul",
+        "Relu",
+        "Squeeze",
+        "Sub"
+      ],
+      "mae_cycles": 19.308102321624755,
+      "rmse_cycles": 25.755671907114017,
+      "max_drift_from_serving_cycles": 3.607330322265625,
+      "runtime": "1.32.0",
+      "peak_process_rss_mib": 52.921875,
+      "batches": {
+        "1": {
+          "p50_us": 7.25,
+          "p95_us": 8.7604,
+          "windows_per_second_at_p50": 137931.0344827586
+        },
+        "32": {
+          "p50_us": 14.333,
+          "p95_us": 16.62705,
+          "windows_per_second_at_p50": 2232610.060699086
+        },
+        "100": {
+          "p50_us": 25.7085,
+          "p95_us": 37.810750000000006,
+          "windows_per_second_at_p50": 3889764.0858081956
+        }
+      }
+    }
+  }
+}

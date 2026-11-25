@@ -13,9 +13,12 @@ inline constexpr std::size_t window_size = 20;
 inline constexpr std::size_t sensor_count = 21;
 inline constexpr std::size_t feature_count = 1 + 3 * sensor_count;
 
+enum class FeatureKernel { automatic, scalar, neon };
+bool neon_available() noexcept;
+
 // Each batch row contains 20 cycles and 20 by 21 row-major sensor values.
 void extract_features(std::span<const std::int64_t> cycles, std::span<const double> sensors,
-                      std::span<double> features);
+                      std::span<double> features, FeatureKernel kernel = FeatureKernel::automatic);
 
 class Engine {
 public:

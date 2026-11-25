@@ -165,3 +165,44 @@ M2 Pro. The largest feature difference was 3.64e-12. On the 100 official
 endpoints, native predictions differed from PyTorch by at most 0.000031
 cycles and produced 19.35 cycles MAE. The standalone executable and pybind11
 binding agreed at every endpoint. [Parity results](../reports/native-parity.json)
+
+## M2 Pro feature and precision experiments
+
+The native microbenchmark measures complete 20-cycle windows, including
+validation. On the second `-O3` run, single-window median time was 162 ns
+for the scalar path and 107 ns for NEON. For batches of 1,024 windows it
+was 164 and 106 ns per window. The first run showed the same ordering.
+`-O2` slowed the scalar path but left NEON close to `-O3`. A 64-byte
+aligned base provided no consistent advantage over an 8-byte offset, so
+the serving path keeps NumPy's existing layout.
+
+Instruments Time Profiler found feature extraction in 1,661 of 1,686
+samples in this feature-only workload. The scalar reduction, NEON
+reduction, and surrounding extraction loop were the leading symbols.
+[Feature timings and profile counts](../reports/native-features-m2.json)
+
+The precision experiment used identical held-out features and separate
+ONNX Runtime CPU processes. Peak RSS includes the Python process.
+
+| Graph | Artifact bytes | Test MAE (cycles) | Batch 1 p50 (µs) | Batch 100 p50 (µs) |
+|---|---:|---:|---:|---:|
+| Serving mix | 40,834 | 19.352 | 5.71 | 25.29 |
+| FP64 | 63,919 | 19.352 | 6.04 | 45.38 |
+| FP32 | 38,180 | 19.355 | 5.54 | 21.85 |
+| Dynamic INT8 weights | 18,600 | 19.308 | 7.25 | 25.71 |
+
+INT8 used quantized matrix multiplication and cut the artifact size by
+54.4%. It took longer at batch one and produced up to 3.61 cycles of
+prediction drift. Peak RSS stayed close to 53 MiB across variants. The
+preprocessing and model precision used in serving were selected before
+this held-out comparison. [Precision trials](../reports/native-precision-m2.json)
+
+```sh
+.local/native/faultwatch-native-bench 30
+cmake -S native -B .local/native-o2 -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_CXX_FLAGS_RELEASE="-O2 -DNDEBUG" -DFAULTWATCH_BUILD_PYTHON=OFF \
+  -DBUILD_TESTING=OFF -DFETCHCONTENT_SOURCE_DIR_ONNXRUNTIME="$PWD/.local/native/_deps/onnxruntime-src"
+cmake --build .local/native-o2 --parallel
+.local/native-o2/faultwatch-native-bench 30
+uv run --locked --group experiments python scripts/benchmark_precision.py
+```

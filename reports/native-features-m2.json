@@ -1,0 +1,364 @@
+{
+  "cpu": "Apple M2 Pro",
+  "ram_gib": 16,
+  "compiler": "AppleClang 21.0.0",
+  "trials": [
+    {
+      "flags": "-O3",
+      "windows_per_timing_sample": 8192,
+      "timing_samples": 30,
+      "results": [
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 0,
+          "kernel": "scalar",
+          "p50_ns_per_window": 202.4536133,
+          "p95_ns_per_window": 245.7376709,
+          "windows_per_second": 4939403.075,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 0,
+          "kernel": "neon",
+          "p50_ns_per_window": 112.2283936,
+          "p95_ns_per_window": 117.7266846,
+          "windows_per_second": 8910401.088,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 8,
+          "kernel": "scalar",
+          "p50_ns_per_window": 161.2294922,
+          "p95_ns_per_window": 167.6685791,
+          "windows_per_second": 6202339.203,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 8,
+          "kernel": "neon",
+          "p50_ns_per_window": 106.3232422,
+          "p95_ns_per_window": 114.3493652,
+          "windows_per_second": 9405281.286,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 0,
+          "kernel": "scalar",
+          "p50_ns_per_window": 164.0726318,
+          "p95_ns_per_window": 175.4200439,
+          "windows_per_second": 6094861.701,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 0,
+          "kernel": "neon",
+          "p50_ns_per_window": 108.434082,
+          "p95_ns_per_window": 116.7652588,
+          "windows_per_second": 9222192.702,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 8,
+          "kernel": "scalar",
+          "p50_ns_per_window": 163.482666,
+          "p95_ns_per_window": 177.083374,
+          "windows_per_second": 6116856.45,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 8,
+          "kernel": "neon",
+          "p50_ns_per_window": 109.2376709,
+          "p95_ns_per_window": 117.045166,
+          "windows_per_second": 9154351.166,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 0,
+          "kernel": "scalar",
+          "p50_ns_per_window": 162.7044678,
+          "p95_ns_per_window": 176.864624,
+          "windows_per_second": 6146112.726,
+          "last_feature": 48.31358124
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 0,
+          "kernel": "neon",
+          "p50_ns_per_window": 105.6417236,
+          "p95_ns_per_window": 113.2456055,
+          "windows_per_second": 9465956.874,
+          "last_feature": 48.31358124
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 8,
+          "kernel": "scalar",
+          "p50_ns_per_window": 162.5722656,
+          "p95_ns_per_window": 178.2939453,
+          "windows_per_second": 6151110.684,
+          "last_feature": 48.31358124
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 8,
+          "kernel": "neon",
+          "p50_ns_per_window": 105.2703857,
+          "p95_ns_per_window": 112.3148193,
+          "windows_per_second": 9499347.732,
+          "last_feature": 48.31358124
+        }
+      ]
+    },
+    {
+      "flags": "-O2",
+      "windows_per_timing_sample": 8192,
+      "timing_samples": 30,
+      "results": [
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 0,
+          "kernel": "scalar",
+          "p50_ns_per_window": 295.5119629,
+          "p95_ns_per_window": 706.2633057,
+          "windows_per_second": 3383957.76,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 0,
+          "kernel": "neon",
+          "p50_ns_per_window": 105.2093506,
+          "p95_ns_per_window": 110.4278564,
+          "windows_per_second": 9504858.593,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 8,
+          "kernel": "scalar",
+          "p50_ns_per_window": 223.0224609,
+          "p95_ns_per_window": 234.1816406,
+          "windows_per_second": 4483853.311,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 8,
+          "kernel": "neon",
+          "p50_ns_per_window": 104.7363281,
+          "p95_ns_per_window": 109.7667236,
+          "windows_per_second": 9547785.548,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 0,
+          "kernel": "scalar",
+          "p50_ns_per_window": 223.8261719,
+          "p95_ns_per_window": 234.5174561,
+          "windows_per_second": 4467752.773,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 0,
+          "kernel": "neon",
+          "p50_ns_per_window": 105.5551758,
+          "p95_ns_per_window": 115.2648926,
+          "windows_per_second": 9473718.296,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 8,
+          "kernel": "scalar",
+          "p50_ns_per_window": 222.5698242,
+          "p95_ns_per_window": 234.1766357,
+          "windows_per_second": 4492972.053,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 8,
+          "kernel": "neon",
+          "p50_ns_per_window": 103.4494629,
+          "p95_ns_per_window": 112.1877441,
+          "windows_per_second": 9666555.747,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 0,
+          "kernel": "scalar",
+          "p50_ns_per_window": 221.6135254,
+          "p95_ns_per_window": 237.050415,
+          "windows_per_second": 4512359.966,
+          "last_feature": 48.31358124
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 0,
+          "kernel": "neon",
+          "p50_ns_per_window": 101.8168945,
+          "p95_ns_per_window": 113.133667,
+          "windows_per_second": 9821552.745,
+          "last_feature": 48.31358124
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 8,
+          "kernel": "scalar",
+          "p50_ns_per_window": 219.5332031,
+          "p95_ns_per_window": 231.7810059,
+          "windows_per_second": 4555119.616,
+          "last_feature": 48.31358124
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 8,
+          "kernel": "neon",
+          "p50_ns_per_window": 102.8289795,
+          "p95_ns_per_window": 107.2540283,
+          "windows_per_second": 9724884.998,
+          "last_feature": 48.31358124
+        }
+      ]
+    },
+    {
+      "flags": "-O3",
+      "windows_per_timing_sample": 8192,
+      "timing_samples": 30,
+      "results": [
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 0,
+          "kernel": "scalar",
+          "p50_ns_per_window": 162.4450684,
+          "p95_ns_per_window": 186.0759277,
+          "windows_per_second": 6155927.109,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 0,
+          "kernel": "neon",
+          "p50_ns_per_window": 106.552124,
+          "p95_ns_per_window": 113.4490967,
+          "windows_per_second": 9385078.047,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 8,
+          "kernel": "scalar",
+          "p50_ns_per_window": 166.229248,
+          "p95_ns_per_window": 368.5556641,
+          "windows_per_second": 6015788.507,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 8,
+          "kernel": "neon",
+          "p50_ns_per_window": 107.9610596,
+          "p95_ns_per_window": 123.0367432,
+          "windows_per_second": 9262598.978,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 0,
+          "kernel": "scalar",
+          "p50_ns_per_window": 165.1662598,
+          "p95_ns_per_window": 173.5635986,
+          "windows_per_second": 6054505.329,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 0,
+          "kernel": "neon",
+          "p50_ns_per_window": 115.1580811,
+          "p95_ns_per_window": 153.9968262,
+          "windows_per_second": 8683715.384,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 8,
+          "kernel": "scalar",
+          "p50_ns_per_window": 164.0880127,
+          "p95_ns_per_window": 170.3389893,
+          "windows_per_second": 6094290.397,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 8,
+          "kernel": "neon",
+          "p50_ns_per_window": 110.2752686,
+          "p95_ns_per_window": 120.4935303,
+          "windows_per_second": 9068216.411,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 0,
+          "kernel": "scalar",
+          "p50_ns_per_window": 163.8843994,
+          "p95_ns_per_window": 203.5167236,
+          "windows_per_second": 6101862.066,
+          "last_feature": 48.31358124
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 0,
+          "kernel": "neon",
+          "p50_ns_per_window": 106.2011719,
+          "p95_ns_per_window": 115.5649414,
+          "windows_per_second": 9416091.954,
+          "last_feature": 48.31358124
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 8,
+          "kernel": "scalar",
+          "p50_ns_per_window": 160.5275879,
+          "p95_ns_per_window": 180.4504395,
+          "windows_per_second": 6229458.831,
+          "last_feature": 48.31358124
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 8,
+          "kernel": "neon",
+          "p50_ns_per_window": 108.3221436,
+          "p95_ns_per_window": 137.807251,
+          "windows_per_second": 9231722.778,
+          "last_feature": 48.31358124
+        }
+      ]
+    }
+  ],
+  "time_profiler": {
+    "template": "Time Profiler",
+    "capture_seconds": 4,
+    "samples": 1686,
+    "feature_extraction_stack_samples": 1661,
+    "leading_leaf_symbols": {
+      "faultwatch::(anonymous namespace)::sum_scalar(std::__1::span<double const, 420ul>)": 829,
+      "faultwatch::extract_features(std::__1::span<long long const, 18446744073709551615ul>, std::__1::span<double const, 18446744073709551615ul>, std::__1::span<double, 18446744073709551615ul>, faultwatch::FeatureKernel)": 508,
+      "faultwatch::(anonymous namespace)::sum_neon(std::__1::span<double const, 420ul>)": 333,
+      "mach_o::GenericTrie::find(CString, bool) const": 2
+    }
+  }
+}

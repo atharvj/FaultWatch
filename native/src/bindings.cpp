@@ -40,9 +40,14 @@ std::span<T> writable_view(py::array_t<T>& array) {
 
 PYBIND11_MODULE(_faultwatch_native, module) {
     module.def("runtime_version", &runtime_version);
+    module.def("neon_available", &neon_available);
+    py::enum_<FeatureKernel>(module, "FeatureKernel")
+        .value("automatic", FeatureKernel::automatic)
+        .value("scalar", FeatureKernel::scalar)
+        .value("neon", FeatureKernel::neon);
     module.def(
         "features",
-        [](const Cycles& cycles, const Sensors& sensors) {
+        [](const Cycles& cycles, const Sensors& sensors, FeatureKernel kernel) {
             const auto count = static_cast<py::ssize_t>(batch_size(cycles, sensors));
             py::array_t<double> result({count, static_cast<py::ssize_t>(feature_count)});
             const auto input_cycles = view(cycles);
@@ -50,11 +55,12 @@ PYBIND11_MODULE(_faultwatch_native, module) {
             const auto output = writable_view(result);
             {
                 py::gil_scoped_release release;
-                extract_features(input_cycles, input_sensors, output);
+                extract_features(input_cycles, input_sensors, output, kernel);
             }
             return result;
         },
-        py::arg("cycles").noconvert(), py::arg("sensors").noconvert());
+        py::arg("cycles").noconvert(), py::arg("sensors").noconvert(),
+        py::arg("kernel") = FeatureKernel::automatic);
 
     py::class_<Engine>(module, "Engine")
         .def(py::init([](py::bytes model, int threads) {

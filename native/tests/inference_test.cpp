@@ -54,6 +54,23 @@ TEST_F(Window, RejectsNonfiniteReadingsAndOverflow) {
     EXPECT_THROW(extract_features(cycles, sensors, features), std::invalid_argument);
 }
 
+TEST_F(Window, DispatchMatchesScalarAndRejectsInvalidSimdInput) {
+    auto expected = features;
+    extract_features(cycles, sensors, expected, FeatureKernel::scalar);
+    extract_features(cycles, sensors, features);
+    EXPECT_EQ(features, expected);
+    if (neon_available()) {
+        extract_features(cycles, sensors, features, FeatureKernel::neon);
+        EXPECT_EQ(features, expected);
+        sensors[0] = std::numeric_limits<double>::quiet_NaN();
+        EXPECT_THROW(extract_features(cycles, sensors, features, FeatureKernel::neon),
+                     std::invalid_argument);
+    } else {
+        EXPECT_THROW(extract_features(cycles, sensors, features, FeatureKernel::neon),
+                     std::invalid_argument);
+    }
+}
+
 TEST(EngineTest, RejectsEmptyOrMalformedModels) {
     EXPECT_THROW(Engine(std::span<const char>{}), std::invalid_argument);
     const std::string junk = "not an ONNX graph";
