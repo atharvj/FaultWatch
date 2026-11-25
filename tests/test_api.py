@@ -222,3 +222,63 @@ def test_native_predictions_use_the_existing_api(
     model.with_suffix(".onnx.sha256").write_text("incorrect\n")
     with TestClient(create_app(postgres, tmp_path)) as client:
         assert client.get("/readyz").json()["model"] is False
+
+
+def test_authenticated_concurrency_and_tracing(postgres, model_bundle, monkeypatch):
+    from types import SimpleNamespace
+
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+    from opentelemetry.sdk.trace.export.in_memory_span_exporter import InMemorySpanExporter
+
+    from faultwatch.security import issue_token
+
+    secret = "independent test secret for telemetry" * 2
+    monkeypatch.setenv("FAULTWATCH_JWT_SECRET", secret)
+    exporter = InMemorySpanExporter()
+    provider = TracerProvider()
+    provider.add_span_processor(SimpleSpanProcessor(exporter))
+    store = {}
+    monkeypatch.setattr(
+        "faultwatch.cache.Redis.from_url",
+        lambda *args, **kwargs: SimpleNamespace(
+            get=store.get,
+            set=lambda key, value, **options: store.update({key: value}),
+            close=lambda: None,
+        ),
+    )
+    reader = {"Authorization": f"Bearer {issue_token(secret, 'console', 'read')}"}
+    writer = {"Authorization": f"Bearer {issue_token(secret, 'gateway', 'ingest')}"}
+    url = "/v1/engines/77/prediction"
+    bundle, _ = model_bundle
+    with TestClient(create_app(postgres, bundle, "redis://127.0.0.1", provider)) as client:
+        assert client.post("/v1/telemetry", json=event(77), headers=reader).status_code == 403
+        assert client.get(url, headers=writer).status_code == 403
+
+        def run(cycle):
+            response = client.post("/v1/telemetry", json=event(77, cycle), headers=writer)
+            assert response.status_code == 201
+            prediction = client.get(url, headers=reader)
+            assert prediction.json()["status"] in {"insufficient_history", "ready"}
+
+        with ThreadPoolExecutor(max_workers=6) as pool:
+            list(pool.map(run, range(1, WINDOW_SIZE + 1)))
+        headers = reader | {
+            "traceparent": "00-87654321876543218765432187654321-1234567890123456-01"
+        }
+        store.clear()
+        assert client.get(url, headers=headers).json()["status"] == "ready"
+        assert client.get(url, headers=reader).json()["status"] == "ready"
+        trace_id = int("87654321876543218765432187654321", 16)
+        traced = [
+            item for item in exporter.get_finished_spans() if item.context.trace_id == trace_id
+        ]
+        assert {item.name for item in traced} == {
+            "GET /v1/engines/{engine_id}/prediction",
+            "postgres.telemetry.window",
+            "redis.get",
+            "redis.set",
+            "inference.predict",
+        }
+        assert all(not item.events for item in traced)
+        assert secret not in str([item.attributes for item in traced])

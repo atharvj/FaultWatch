@@ -1,0 +1,33 @@
+{
+  "dependency_audit": {
+    "tool": "uv audit",
+    "before": {
+      "audited_packages": 167,
+      "vulnerabilities": 16,
+      "adverse_statuses": 0
+    },
+    "after": {
+      "audited_packages": 163,
+      "vulnerabilities": 0,
+      "adverse_statuses": 0
+    }
+  },
+  "container_scan": {
+    "tool": "Trivy 0.76.2",
+    "platform": "linux/arm64",
+    "base": "Python 3.11.18 / Debian 12.15",
+    "fixable_high_or_critical": 0,
+    "unfixed_high_or_critical": 101,
+    "secret_findings": 0
+  },
+  "tracing": {
+    "transport": "OTLP HTTP to loopback",
+    "observed_spans": [
+      "GET /v1/engines/{engine_id}/prediction",
+      "postgres.telemetry.window",
+      "redis.get",
+      "redis.set",
+      "inference.predict"
+    ]
+  }
+}

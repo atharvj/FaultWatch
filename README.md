@@ -83,6 +83,23 @@ Replay the test engines, then run `make benchmark` to exercise the metrics.
 `make cache` enables Redis for repeated predictions.
 See the [local performance measurements](docs/benchmark.md).
 
+Set `FAULTWATCH_OTLP_ENDPOINT` to a collector's HTTP `/v1/traces` URL or
+`FAULTWATCH_TRACE_CONSOLE=1` to see request, PostgreSQL, Redis and inference
+spans. Trace attributes contain operation names and status codes.
+
+## API access
+
+Set `FAULTWATCH_JWT_SECRET` to a signing key of at least 32 bytes before
+starting the API to enable bearer access on `/v1`. Issue short-lived tokens
+with `faultwatch token --subject dashboard --role read`. The dashboard
+accepts a read token when prompted. Replay uses an `ingest` token from
+`FAULTWATCH_REPLAY_TOKEN`. The `admin` role can do both.
+
+`FAULTWATCH_RATE_PER_SECOND` and `FAULTWATCH_RATE_BURST` enable per-process
+token buckets for reads and writes. Auth and rate limiting are optional for
+the localhost demo. GitHub Actions checks the lockfile, Python source, and
+the runtime image.
+
 ## Kubernetes
 
 For a local Kubernetes run, install [kind](https://kind.sigs.k8s.io/docs/user/quick-start/)

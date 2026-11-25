@@ -38,6 +38,10 @@ def main() -> None:
     replay.add_argument(
         "--rate", type=float, default=25, help="Events per second. Use 0 for no delay"
     )
+    token = commands.add_parser("token", help="Issue a short-lived telemetry API token")
+    token.add_argument("--subject", required=True)
+    token.add_argument("--role", choices=("read", "ingest", "admin"), required=True)
+    token.add_argument("--seconds", type=int, default=900)
     export = commands.add_parser("export-onnx", help="Export and benchmark the FD001 MLP")
     export.add_argument("--data", type=Path, default=DEFAULT_DATA)
     export.add_argument("--bundle", type=Path, default=DEFAULT_BUNDLE)
@@ -51,7 +55,14 @@ def main() -> None:
     args = parser.parse_args()
 
     try:
-        if args.command == "fetch":
+        if args.command == "token":
+            from faultwatch.security import AUTH_ENV, issue_token
+
+            secret = os.getenv(AUTH_ENV)
+            if not secret:
+                raise ValueError(f"Set {AUTH_ENV} before issuing tokens")
+            print(issue_token(secret, args.subject, args.role, args.seconds))
+        elif args.command == "fetch":
             fetch_fd001(args.data, args.archive)
             print(f"Verified FD001 files in {args.data}")
         elif args.command == "train":

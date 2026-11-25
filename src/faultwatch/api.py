@@ -7,10 +7,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Annotated, Literal
 
-from fastapi import FastAPI, HTTPException, Query, Request, Response
+from fastapi import APIRouter, Depends, FastAPI, HTTPException, Query, Request, Response
 from fastapi import Path as PathParameter
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.trace import SpanKind
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import func, select
@@ -23,6 +25,8 @@ from faultwatch.db import DATABASE_ENV, connect_database, recent_readings, store
 from faultwatch.features import WINDOW_SIZE
 from faultwatch.inference import MODEL_VERSION, load_predictor
 from faultwatch.metrics import Metrics, RequestMetrics
+from faultwatch.security import AccessPolicy, TelemetryBodyLimit
+from faultwatch.tracing import configure_tracing, span
 
 logger = logging.getLogger(__name__)
 MAX_KEY = 2_147_483_647
@@ -78,7 +82,10 @@ def _database(request: Request) -> Engine:
 
 
 def create_app(
-    database: str | URL | None = None, model_dir: Path | None = None, cache_url: str | None = None
+    database: str | URL | None = None,
+    model_dir: Path | None = None,
+    cache_url: str | None = None,
+    trace_provider: TracerProvider | None = None,
 ) -> FastAPI:
     backend = os.getenv(BACKEND_ENV, "torch")
     database = database or os.getenv(DATABASE_ENV)
@@ -86,6 +93,14 @@ def create_app(
     model_dir = (
         model_dir if model_dir is not None else Path(os.getenv(MODEL_ENV, DEFAULT_MODEL_DIR))
     )
+    access = AccessPolicy()
+    provider = trace_provider or configure_tracing()
+    tracer = provider.get_tracer("faultwatch") if provider is not None else None
+
+    def db_span(operation: str):
+        return span(
+            tracer, operation, kind=SpanKind.CLIENT, attributes={"db.system.name": "postgresql"}
+        )
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -110,7 +125,7 @@ def create_app(
         app.state.cache = None
         if cache_url:
             try:
-                app.state.cache = PredictionCache(cache_url, metrics.cache)
+                app.state.cache = PredictionCache(cache_url, metrics.cache, tracer)
             except ValueError:
                 logger.warning(
                     "Redis cache URL is invalid. Predictions will use the model directly."
@@ -122,10 +137,14 @@ def create_app(
                 app.state.database.dispose()
             if app.state.cache is not None:
                 app.state.cache.close()
+            if provider is not None:
+                provider.shutdown()
 
     app = FastAPI(title="FaultWatch", version="1", lifespan=lifespan)
+    routes = APIRouter(prefix="/v1", dependencies=[Depends(access.check)])
     metrics = Metrics()
-    app.add_middleware(RequestMetrics, metrics=metrics)
+    app.add_middleware(TelemetryBodyLimit)
+    app.add_middleware(RequestMetrics, metrics=metrics, tracer=tracer)
 
     @app.get("/metrics", include_in_schema=False)
     def prometheus() -> Response:
@@ -170,9 +189,9 @@ def create_app(
             "model": model_ready,
         }
 
-    @app.post("/v1/telemetry", status_code=201, responses={200: {"model": IngestResult}})
+    @routes.post("/telemetry", status_code=201, responses={200: {"model": IngestResult}})
     def ingest(event: TelemetryEvent, request: Request, response: Response) -> IngestResult:
-        with _database(request).begin() as connection:
+        with db_span("postgres.telemetry.insert"), _database(request).begin() as connection:
             outcome = store_reading(connection, **event.model_dump())
         metrics.telemetry.labels(outcome=outcome).inc()
         if outcome == "conflict":
@@ -181,35 +200,35 @@ def create_app(
             response.status_code = 200
         return IngestResult(engine_id=event.engine_id, cycle=event.cycle, status=outcome)
 
-    @app.get("/v1/engines")
+    @routes.get("/engines")
     def engines(request: Request) -> list[EngineSummary]:
         statement = (
             select(telemetry.c.engine_id, func.max(telemetry.c.cycle).label("latest_cycle"))
             .group_by(telemetry.c.engine_id)
             .order_by(telemetry.c.engine_id)
         )
-        with _database(request).connect() as connection:
+        with db_span("postgres.engines.list"), _database(request).connect() as connection:
             return [
                 EngineSummary.model_validate(row)
                 for row in connection.execute(statement).mappings()
             ]
 
-    @app.get("/v1/engines/{engine_id}/history")
+    @routes.get("/engines/{engine_id}/history")
     def history(
         engine_id: EnginePath, request: Request, limit: Annotated[int, Query(ge=1, le=500)] = 100
     ) -> list[StoredReading]:
-        with _database(request).connect() as connection:
+        with db_span("postgres.telemetry.history"), _database(request).connect() as connection:
             rows = recent_readings(connection, engine_id, limit)
         if not rows:
             raise HTTPException(404, "Engine has no telemetry")
         return [StoredReading.model_validate(row) for row in rows]
 
-    @app.get("/v1/engines/{engine_id}/prediction")
+    @routes.get("/engines/{engine_id}/prediction")
     def prediction(engine_id: EnginePath, request: Request) -> Prediction:
         predictor = request.app.state.predictor
         if predictor is None:
             raise HTTPException(503, "Model unavailable")
-        with _database(request).connect() as connection:
+        with db_span("postgres.telemetry.window"), _database(request).connect() as connection:
             rows = recent_readings(connection, engine_id, WINDOW_SIZE)
         if not rows:
             raise HTTPException(404, "Engine has no telemetry")
@@ -231,7 +250,10 @@ def create_app(
             return result
 
         def score() -> float:
-            with metrics.inference_duration.time():
+            with (
+                metrics.inference_duration.time(),
+                span(tracer, "inference.predict", attributes={"faultwatch.backend": backend}),
+            ):
                 return predictor.predict_window(engine_id, rows)
 
         cache = request.app.state.cache
@@ -246,4 +268,5 @@ def create_app(
         result.status = "ready"
         return result
 
+    app.include_router(routes)
     return app

@@ -31,7 +31,8 @@ def local_s3(endpoint: str):
         endpoint_url=endpoint,
         region_name="us-east-1",
         aws_access_key_id="faultwatch-local",
-        aws_secret_access_key="faultwatch-local",
+        # The loopback emulator accepts dummy credentials.
+        aws_secret_access_key="faultwatch-local",  # noqa: S106
         config=Config(proxies={}, connect_timeout=3, read_timeout=3),
     )
 

@@ -9,16 +9,19 @@ dependencies = [
     "httpx2>=2.16,<3",
     "numpy>=2.2,<3",
     "onnxruntime>=1.22,<2",
+    "opentelemetry-exporter-otlp-proto-http>=1.36,<2",
+    "opentelemetry-sdk>=1.36,<2",
     "pandas>=2.3,<3",
     "prometheus-client>=0.22,<1",
     "psycopg[binary]>=3.2,<4",
     "pydantic>=2.11,<3",
+    "pyjwt>=2.10,<3",
     "redis>=8,<9",
     "scikit-learn>=1.7,<1.10",
     "skops>=0.13,<0.17",
     "sqlalchemy>=2.0,<2.1",
     "threadpoolctl>=3.5,<4",
-    "torch>=2.9,<2.13",
+    "torch>=2.13,<2.14",
     "uvicorn>=0.34,<1",
 ]
 
@@ -30,7 +33,7 @@ dev = ["pytest>=8.4,<10", "ruff>=0.15,<0.16"]
 aws = ["boto3>=1.44,<2", "moto[server]>=5.2,<6"]
 kafka = ["confluent-kafka>=2.14,<3"]
 spark = ["pyspark>=4.2,<5"]
-rag = ["transformers>=4.57,<5", "pgvector>=0.4,<1", "sentencepiece>=0.2,<1"]
+rag = ["transformers>=5.10,<6", "pgvector>=0.4,<1", "sentencepiece>=0.2,<1"]
 xgboost = ["xgboost>=3.1,<4"]
 experiments = [
     "mlflow-skinny>=3.10,<4",

@@ -56,6 +56,11 @@
   <a href="/docs">API docs</a>
 </header>
 <main>
+  <form id="auth" hidden>
+    <label for="token">Read access token</label>
+    <input id="token" type="password" autocomplete="off" required>
+    <button type="submit">Connect</button>
+  </form>
   <div>
     <label for="engine">Engine</label>
     <select id="engine" disabled><option value="">Waiting for data</option></select>
@@ -92,6 +97,7 @@
   const number = new Intl.NumberFormat("en", { maximumSignificantDigits: 6 });
   let rows = [];
   let request = 0;
+  let bearer = "";
 
   element("threshold").textContent = `${threshold} cycles`;
   for (let index = 0; index < 21; index++) sensor.add(new Option(index + 1, index));
@@ -162,9 +168,14 @@
   }
 
   async function get(path, allowUnavailable = false) {
-    const response = await fetch(path);
+    const headers = bearer ? {Authorization: `Bearer ${bearer}`} : {};
+    const response = await fetch(path, {headers});
     if (allowUnavailable && response.status === 503) return null;
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    if (!response.ok) {
+      const error = new Error(`HTTP ${response.status}`);
+      error.status = response.status;
+      throw error;
+    }
     return response.json();
   }
 
@@ -189,6 +200,7 @@
     try {
       const engines = await get("/v1/engines");
       if (current !== request) return;
+      element("auth").hidden = true;
       if (!engines.length) {
         message.textContent = "Start a replay to see engine telemetry.";
         message.hidden = false;
@@ -215,13 +227,21 @@
       showPrediction(prediction);
       draw();
       message.hidden = true;
-    } catch {
+    } catch (error) {
       if (current !== request) return;
-      message.textContent = "Telemetry unavailable. Retrying…";
+      const unauthorized = error.status === 401 || error.status === 403;
+      element("auth").hidden = !unauthorized;
+      message.textContent = unauthorized ? "Enter a token with read access." : "Telemetry unavailable. Retrying…";
       message.hidden = false;
     }
   }
 
+  element("auth").addEventListener("submit", event => {
+    event.preventDefault();
+    bearer = element("token").value.trim();
+    element("token").value = "";
+    refresh();
+  });
   engine.addEventListener("change", refresh);
   sensor.addEventListener("change", draw);
   new ResizeObserver(draw).observe(chart);

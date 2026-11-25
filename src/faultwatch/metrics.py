@@ -2,8 +2,11 @@
 
 from time import perf_counter
 
+from opentelemetry.trace import SpanKind, StatusCode
 from prometheus_client import CollectorRegistry, Counter, Histogram, Info
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
+
+from faultwatch.tracing import span, trace_context
 
 DURATION_BUCKETS = (0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5)
 METHODS = {"GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
@@ -52,9 +55,10 @@ class Metrics:
 
 
 class RequestMetrics:
-    def __init__(self, app: ASGIApp, metrics: Metrics) -> None:
+    def __init__(self, app: ASGIApp, metrics: Metrics, tracer=None) -> None:
         self.app = app
         self.metrics = metrics
+        self.tracer = tracer
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] != "http" or scope["path"] in PROBE_PATHS:
@@ -70,12 +74,25 @@ class RequestMetrics:
                 status = message["status"]
             await send(message)
 
-        try:
-            await self.app(scope, receive, record_status)
-        finally:
-            method = scope["method"] if scope["method"] in METHODS else "OTHER"
-            route = getattr(scope.get("route"), "path", "unmatched")
-            self.metrics.requests.labels(method=method, route=route, status=str(status)).inc()
-            self.metrics.request_duration.labels(method=method, route=route).observe(
-                perf_counter() - start
-            )
+        context = trace_context(scope) if self.tracer is not None else None
+        with span(self.tracer, "HTTP request", kind=SpanKind.SERVER, context=context) as trace:
+            try:
+                await self.app(scope, receive, record_status)
+            finally:
+                method = scope["method"] if scope["method"] in METHODS else "OTHER"
+                route = getattr(scope.get("route"), "path", "unmatched")
+                self.metrics.requests.labels(method=method, route=route, status=str(status)).inc()
+                self.metrics.request_duration.labels(method=method, route=route).observe(
+                    perf_counter() - start
+                )
+                if trace is not None:
+                    trace.update_name(f"{method} {route}")
+                    trace.set_attributes(
+                        {
+                            "http.request.method": method,
+                            "http.route": route,
+                            "http.response.status_code": status,
+                        }
+                    )
+                    if status >= 500:
+                        trace.set_status(StatusCode.ERROR)

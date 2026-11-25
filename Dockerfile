@@ -1,5 +1,5 @@
 FROM ghcr.io/astral-sh/uv:0.11.24@sha256:99ea34acedc870ba4ad11a1f540a1c04267c9f30aadc465a94406f52dfda2c36 AS uv
-FROM python:3.11.14-slim-bookworm@sha256:65a93d69fa75478d554f4ad27c85c1e69fa184956261b4301ebaf6dbb0a3543d AS python-base
+FROM python:3.11.18-slim-bookworm@sha256:ef56ae98435cc40d8a27020b0b32a9941515acd5840f0fba34858bb34dd362d1 AS python-base
 
 FROM python-base AS build
 COPY --from=uv /uv /usr/local/bin/uv
@@ -11,6 +11,7 @@ COPY src ./src
 RUN --mount=type=cache,target=/root/.cache/uv uv sync --locked --no-dev --no-editable
 
 FROM python-base AS runtime
+RUN python -m pip --disable-pip-version-check uninstall --yes setuptools wheel
 WORKDIR /app
 ENV PATH="/app/.venv/bin:${PATH}" PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
     OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2

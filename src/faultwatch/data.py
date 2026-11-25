@@ -38,7 +38,8 @@ def _verify_hash(content: bytes, expected: str, name: str) -> None:
 def fetch_fd001(destination: Path, archive_path: Path | None = None) -> None:
     """Download the NASA-listed archive or use a verified local copy."""
     if archive_path is None:
-        with urlopen(NASA_ARCHIVE_URL, timeout=60) as response:
+        # The downloader uses the fixed HTTPS archive URL and verifies its checksum.
+        with urlopen(NASA_ARCHIVE_URL, timeout=60) as response:  # noqa: S310
             archive_bytes = response.read(13_000_001)
     else:
         archive_bytes = archive_path.read_bytes()

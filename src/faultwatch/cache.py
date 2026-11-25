@@ -6,6 +6,7 @@ from math import isfinite
 from struct import Struct
 from typing import Any
 
+from opentelemetry.trace import SpanKind
 from prometheus_client import Counter
 from redis import Redis
 from redis.backoff import NoBackoff
@@ -13,6 +14,7 @@ from redis.exceptions import RedisError
 from redis.retry import Retry
 
 from faultwatch.data import OPERATING_SETTINGS, SENSORS
+from faultwatch.tracing import span
 
 CACHE_ENV = "FAULTWATCH_REDIS_URL"
 TTL_SECONDS = 120
@@ -29,7 +31,7 @@ def prediction_key(
 
 
 class PredictionCache:
-    def __init__(self, url: str, requests: Counter) -> None:
+    def __init__(self, url: str, requests: Counter, tracer=None) -> None:
         self.client = Redis.from_url(
             url,
             socket_connect_timeout=0.075,
@@ -38,10 +40,15 @@ class PredictionCache:
             max_connections=32,
         )
         self.requests = requests
+        self.tracer = tracer
+
+    def _span(self, name: str):
+        return span(self.tracer, name, kind=SpanKind.CLIENT, attributes={"db.system.name": "redis"})
 
     def get_or_score(self, key: str, score: Callable[[], float]) -> float:
         try:
-            cached = self.client.get(key)
+            with self._span("redis.get"):
+                cached = self.client.get(key)
         except RedisError:
             self.requests.labels(outcome="error").inc()
             return score()
@@ -57,7 +64,8 @@ class PredictionCache:
 
         value = score()
         try:
-            self.client.set(key, repr(value), ex=TTL_SECONDS)
+            with self._span("redis.set"):
+                self.client.set(key, repr(value), ex=TTL_SECONDS)
         except RedisError:
             self.requests.labels(outcome="error").inc()
         else:

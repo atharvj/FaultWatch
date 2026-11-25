@@ -241,3 +241,16 @@ feature p50 was 355 ns scalar and 199 ns NEON on the ARM runner, and
 296 ns scalar on the x86-64 runner. Treat these as runner-specific
 measurements. The pinned native package is configured for macOS ARM64,
 Linux ARM64 and Linux x86-64. [Runner measurements](../reports/native-linux-ci.json)
+
+## Reliability checks
+
+Concurrent authenticated ingestion and scoring ran against PostgreSQL.
+The Compose tests exercised PostgreSQL loss and recovery, API restart,
+and Redis fallback. A loopback OTLP receiver observed HTTP, PostgreSQL,
+Redis and inference spans. Auth and rate limiting are opt-in.
+
+The Python audit went from 16 advisory records to zero after updating
+the affected packages. The Linux ARM64 image scan found zero secrets
+and zero high or critical findings with an available fix. It also
+reported 101 high or critical findings without a fix.
+[Verification summary](../reports/reliability-checks.json)

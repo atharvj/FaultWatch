@@ -57,7 +57,7 @@ def test_compose_dashboard_and_prediction(model_bundle, trajectories, cached):
                     "sensors": values[3:],
                 }
             )
-        with httpx2.Client(base_url=f"http://{endpoint}", trust_env=False) as client:
+        with httpx2.Client(base_url=f"http://{endpoint}", trust_env=False, timeout=8) as client:
             assert client.get("/readyz").json() == {
                 "status": "ready",
                 "database": True,
@@ -81,6 +81,15 @@ def test_compose_dashboard_and_prediction(model_bundle, trajectories, cached):
             assert prediction["predicted_rul_cycles"] == pytest.approx(expected, abs=1e-4)
             if cached:
                 check_redis(client, compose, url, prediction, trajectories, predictor)
+            else:
+                compose("stop", "db")
+                assert client.get(url).status_code == 503
+                compose("up", "--wait", "db")
+                compose("restart", "api")
+                compose("up", "--wait", "api")
+                endpoint = compose("port", "api", "8000", capture_output=True).stdout.strip()
+                with httpx2.Client(base_url=f"http://{endpoint}", trust_env=False) as restarted:
+                    assert restarted.get(url).json() == prediction
     except Exception:
         compose("logs", "--tail", "30", check=False)
         raise

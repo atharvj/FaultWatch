@@ -1,6 +1,7 @@
 """Replay real FD001 test telemetry through the HTTP ingest endpoint."""
 
 import math
+import os
 from pathlib import Path
 from time import monotonic, sleep
 
@@ -37,8 +38,12 @@ def replay_fd001(data: Path, base_url: str, engines: list[int] | None, rate: flo
     counts = {"created": 0, "duplicate": 0}
     interval = 1 / rate if rate else 0
     next_send = monotonic()
+    token = os.getenv("FAULTWATCH_REPLAY_TOKEN")
+    headers = {"Authorization": f"Bearer {token}"} if token else {}
     try:
-        with httpx2.Client(base_url=base_url, timeout=5, trust_env=False) as client:
+        with httpx2.Client(
+            base_url=base_url, timeout=5, trust_env=False, headers=headers
+        ) as client:
             for event in replay_events(data, engines):
                 selected.add(event["engine_id"])
                 wait = next_send - monotonic()
