@@ -15,7 +15,13 @@ from pgvector.psycopg import register_vector
 from transformers import AutoModel, AutoModelForSeq2SeqLM, AutoTokenizer
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCES = ("README.md", "docs/dataset.md", "docs/model_card.md", "docs/benchmark.md")
+SOURCES = (
+    "README.md",
+    "docs/technical-guide.md",
+    "docs/dataset.md",
+    "docs/model_card.md",
+    "docs/benchmark.md",
+)
 MODELS = {
     "embedding": (
         "sentence-transformers/all-MiniLM-L6-v2",
