@@ -135,6 +135,13 @@ class Predictor:
         predictions = np.empty(0) if features.empty else predict_cycles(self.model, features)
         return pd.Series(predictions, index=features.index, name="predicted_rul_cycles")
 
+    def predict_window(self, engine_id: int, rows: list) -> float:
+        frame = pd.DataFrame(
+            [(engine_id, row["cycle"], *row["settings"], *row["sensors"]) for row in rows],
+            columns=TELEMETRY_COLUMNS,
+        )
+        return float(self.predict_latest(frame).iloc[0])
+
 
 def load_predictor(directory: Path) -> Predictor:
     """Load the validation-selected model from a locally generated artifact bundle."""

@@ -1,0 +1,15 @@
+{
+  "architecture": "arm64",
+  "system": "Darwin",
+  "native_onnxruntime": "1.32.0",
+  "python_onnxruntime": "1.32.0",
+  "telemetry_rows": 13096,
+  "held_out_windows": 11196,
+  "official_test_endpoints": 100,
+  "max_feature_difference": 3.637978807091713e-12,
+  "max_native_vs_python_onnx_cycles": 0.0,
+  "max_native_vs_pytorch_endpoint_cycles": 3.0517578125e-05,
+  "standalone_matches_binding": true,
+  "native_endpoint_mae_cycles": 19.351949820518495,
+  "native_endpoint_rmse_cycles": 25.763907590319686
+}

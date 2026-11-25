@@ -178,3 +178,47 @@ def test_metrics_use_route_templates_and_exclude_probes(without_services):
     assert 'route="/healthz"' not in response.text
     assert 'route="/v1/engines/731/history"' not in response.text
     assert 'route="/missing-924"' not in response.text
+
+
+def test_native_predictions_use_the_existing_api(
+    postgres, model_bundle, trajectories, tmp_path, monkeypatch
+):
+    pytest.importorskip("_faultwatch_native")
+    pytest.importorskip("onnxscript")
+    from shutil import copy2
+
+    from faultwatch.features import causal_features
+    from faultwatch.onnx_export import export_and_validate
+
+    source, _ = model_bundle
+    copy2(source / "manifest.json", tmp_path)
+    model = tmp_path / "model.onnx"
+    export_and_validate(source, model, causal_features(trajectories, latest_only=True), repeats=2)
+    monkeypatch.setenv("FAULTWATCH_BACKEND", "native")
+    with TestClient(create_app(postgres, tmp_path)) as client:
+        assert client.get("/readyz").status_code == 200
+        assert (
+            'faultwatch_model_info{backend="native",version="fd001-v1"}'
+            in client.get("/metrics").text
+        )
+        frame = trajectories.loc[(trajectories[ENGINE] == 3) & (trajectories[CYCLE] <= WINDOW_SIZE)]
+        for engine, cycle, *values in frame.itertuples(index=False, name=None):
+            payload = {
+                "engine_id": engine,
+                "cycle": cycle,
+                "settings": values[:3],
+                "sensors": values[3:],
+            }
+            assert client.post("/v1/telemetry", json=payload).status_code == 201
+            if cycle == WINDOW_SIZE - 1:
+                assert (
+                    client.get("/v1/engines/3/prediction").json()["status"]
+                    == "insufficient_history"
+                )
+        prediction = client.get("/v1/engines/3/prediction").json()
+        assert prediction["status"] == "ready"
+        expected = load_predictor(source).predict_latest(frame).iloc[0]
+        assert prediction["predicted_rul_cycles"] == pytest.approx(expected, abs=1e-4)
+    model.with_suffix(".onnx.sha256").write_text("incorrect\n")
+    with TestClient(create_app(postgres, tmp_path)) as client:
+        assert client.get("/readyz").json()["model"] is False

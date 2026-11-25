@@ -156,3 +156,12 @@ run this sequence once for each backend in the table.
 FAULTWATCH_BACKEND=onnx FAULTWATCH_REDIS_URL= docker compose up --wait api
 make benchmark
 ```
+
+## Native FD001 parity
+
+The C++20 engine and Python ONNX Runtime 1.32.0 returned identical scores
+for all 11,196 complete windows in the held-out FD001 trajectories on the
+M2 Pro. The largest feature difference was 3.64e-12. On the 100 official
+endpoints, native predictions differed from PyTorch by at most 0.000031
+cycles and produced 19.35 cycles MAE. The standalone executable and pybind11
+binding agreed at every endpoint. [Parity results](../reports/native-parity.json)

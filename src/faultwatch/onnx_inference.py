@@ -5,7 +5,6 @@ from hashlib import sha256
 from pathlib import Path
 
 import numpy as np
-import onnxruntime as ort
 import pandas as pd
 
 from faultwatch.features import FEATURE_COLUMNS
@@ -16,6 +15,8 @@ THREADS = 2
 
 
 def session_options():
+    import onnxruntime as ort
+
     options = ort.SessionOptions()
     options.intra_op_num_threads = THREADS
     options.inter_op_num_threads = 1
@@ -31,7 +32,7 @@ class OnnxModel:
         return self.session.run(["rul_cycles"], {"features": values})[0]
 
 
-def load_onnx_predictor(directory: Path) -> Predictor:
+def verified_graph(directory: Path) -> tuple[dict, bytes, str]:
     manifest = load_manifest(directory)
     if manifest["selected_model"] != "torch_mlp":
         raise ValueError("ONNX serving requires the selected PyTorch MLP")
@@ -40,6 +41,21 @@ def load_onnx_predictor(directory: Path) -> Predictor:
     digest = sha256(content).hexdigest()
     if digest != path.with_suffix(".onnx.sha256").read_text().strip():
         raise ValueError("ONNX model checksum mismatch")
+    return manifest, content, digest
+
+
+def expected_metadata(manifest: dict) -> dict[str, str]:
+    return {
+        "model_version": manifest["model_version"],
+        "source_artifact_sha256": manifest["artifact_sha256"]["torch_mlp"],
+        "feature_columns": json.dumps(FEATURE_COLUMNS),
+    }
+
+
+def load_onnx_predictor(directory: Path) -> Predictor:
+    import onnxruntime as ort
+
+    manifest, content, digest = verified_graph(directory)
 
     ort.disable_telemetry_events()
     try:
@@ -51,9 +67,7 @@ def load_onnx_predictor(directory: Path) -> Predictor:
     metadata = session.get_modelmeta().custom_metadata_map
     inputs = session.get_inputs()
     if (
-        metadata.get("model_version") != manifest["model_version"]
-        or metadata.get("source_artifact_sha256") != manifest["artifact_sha256"]["torch_mlp"]
-        or metadata.get("feature_columns") != json.dumps(FEATURE_COLUMNS)
+        any(metadata.get(key) != value for key, value in expected_metadata(manifest).items())
         or len(inputs) != 1
         or inputs[0].name != "features"
         or inputs[0].type != "tensor(double)"

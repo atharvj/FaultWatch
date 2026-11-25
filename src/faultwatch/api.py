@@ -7,7 +7,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Annotated, Literal
 
-import pandas as pd
 from fastapi import FastAPI, HTTPException, Query, Request, Response
 from fastapi import Path as PathParameter
 from fastapi.exceptions import RequestValidationError
@@ -19,7 +18,7 @@ from sqlalchemy.engine import Engine, URL
 from sqlalchemy.exc import SQLAlchemyError
 
 from faultwatch.cache import CACHE_ENV, PredictionCache, prediction_key
-from faultwatch.data import OPERATING_SETTINGS, SENSORS, TELEMETRY_COLUMNS
+from faultwatch.data import OPERATING_SETTINGS, SENSORS
 from faultwatch.db import DATABASE_ENV, connect_database, recent_readings, store_reading, telemetry
 from faultwatch.features import WINDOW_SIZE
 from faultwatch.inference import MODEL_VERSION, load_predictor
@@ -96,6 +95,10 @@ def create_app(
                 from faultwatch.onnx_inference import load_onnx_predictor
 
                 app.state.predictor = load_onnx_predictor(model_dir)
+            elif backend == "native":
+                from faultwatch.native_inference import load_native_predictor
+
+                app.state.predictor = load_native_predictor(model_dir)
             elif backend == "torch":
                 app.state.predictor = load_predictor(model_dir)
             else:
@@ -228,12 +231,8 @@ def create_app(
             return result
 
         def score() -> float:
-            frame = pd.DataFrame(
-                [(engine_id, row["cycle"], *row["settings"], *row["sensors"]) for row in rows],
-                columns=TELEMETRY_COLUMNS,
-            )
             with metrics.inference_duration.time():
-                return float(predictor.predict_latest(frame).iloc[0])
+                return predictor.predict_window(engine_id, rows)
 
         cache = request.app.state.cache
         try:

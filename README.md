@@ -18,7 +18,7 @@ predictions update, and Grafana track the running service.
 flowchart TD
     Data["NASA C-MAPSS FD001"] --> Replay["Telemetry replay"]
     Data --> Train["Train and export the model"]
-    Train --> Inference["20-cycle features and model scoring"]
+    Train --> Inference["20-cycle features and scoring"]
     Replay -->|HTTP ingest| API["FastAPI"]
     Replay -.-> Kafka["Kafka"]
     Kafka --> Consumer["Replay consumer"]
@@ -119,6 +119,31 @@ curl -fsS http://127.0.0.1:8000/metrics | grep faultwatch_model_info
 
 The graph and its checksum live alongside the model manifest. Compose defaults
 to PyTorch. [Live HTTP comparison](reports/onnx-serving.json)
+
+## C++ inference
+
+Build with a C++20 compiler, CMake 3.25+, and the project's Python environment.
+CMake downloads pinned ONNX Runtime CPU, pybind11, and GoogleTest packages.
+
+```sh
+cmake -S native -B .local/native -DCMAKE_BUILD_TYPE=Release \
+  -DPython_EXECUTABLE="$PWD/.venv/bin/python"
+cmake --build .local/native --parallel
+ctest --test-dir .local/native --output-on-failure
+.local/native/faultwatch-native artifacts/fd001-v1/model.onnx data/fd001/test_FD001.txt
+PYTHONPATH=.local/native/python .venv/bin/python scripts/verify_native.py
+```
+
+For the optional API backend, run this from the host with the Compose
+database running and the exported graph in the model bundle.
+
+```sh
+PYTHONPATH=.local/native/python FAULTWATCH_BACKEND=native \
+  FAULTWATCH_DATABASE_URL=postgresql+psycopg://faultwatch:faultwatch-local@127.0.0.1:55433/faultwatch \
+  .venv/bin/uvicorn faultwatch.api:create_app --factory --port 8001
+```
+
+[Held-out parity results](reports/native-parity.json)
 
 ## Artifact storage
 
