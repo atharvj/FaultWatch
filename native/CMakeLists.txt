@@ -48,9 +48,10 @@ set_target_properties(onnxruntime_cpu PROPERTIES
 file(CREATE_LINK "${ort_library}" "${CMAKE_CURRENT_BINARY_DIR}/${ort_soname}" SYMBOLIC)
 set(CMAKE_BUILD_RPATH "${CMAKE_CURRENT_BINARY_DIR}")
 
-add_library(faultwatch_engine STATIC src/engine.cpp src/features.cpp)
+find_package(Threads REQUIRED)
+add_library(faultwatch_engine STATIC src/engine.cpp src/features.cpp src/telemetry.cpp src/worker_pool.cpp)
 target_include_directories(faultwatch_engine PUBLIC include)
-target_link_libraries(faultwatch_engine PRIVATE onnxruntime_cpu)
+target_link_libraries(faultwatch_engine PRIVATE onnxruntime_cpu Threads::Threads)
 target_compile_options(faultwatch_engine PRIVATE -Wall -Wextra -Wpedantic)
 
 add_executable(faultwatch-native src/main.cpp)
@@ -58,6 +59,9 @@ target_link_libraries(faultwatch-native PRIVATE faultwatch_engine)
 
 add_executable(faultwatch-native-bench benchmarks/features.cpp)
 target_link_libraries(faultwatch-native-bench PRIVATE faultwatch_engine)
+
+add_executable(faultwatch-worker-bench benchmarks/workers.cpp)
+target_link_libraries(faultwatch-worker-bench PRIVATE faultwatch_engine)
 
 if(FAULTWATCH_BUILD_PYTHON)
     find_package(Python 3.11 REQUIRED COMPONENTS Interpreter Development.Module)
@@ -80,8 +84,8 @@ if(BUILD_TESTING)
         URL_HASH SHA256=65fab701d9829d38cb77c14acdc431d2108bfdbf8979e40eb8ae567edf10b27c
     )
     FetchContent_MakeAvailable(googletest)
-    add_executable(faultwatch_native_tests tests/inference_test.cpp)
+    add_executable(faultwatch_native_tests tests/inference_test.cpp tests/worker_pool_test.cpp)
     target_link_libraries(faultwatch_native_tests PRIVATE faultwatch_engine GTest::gtest_main)
     include(GoogleTest)
-    gtest_discover_tests(faultwatch_native_tests)
+    gtest_discover_tests(faultwatch_native_tests PROPERTIES TIMEOUT 30)
 endif()

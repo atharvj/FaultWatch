@@ -206,3 +206,28 @@ cmake --build .local/native-o2 --parallel
 .local/native-o2/faultwatch-native-bench 30
 uv run --locked --group experiments python scripts/benchmark_precision.py
 ```
+
+## Bounded inference queue
+
+Each simulated device repeatedly submitted one official FD001 endpoint to
+the native scorer. The benchmark used one shared ONNX session with a
+single intra-op thread. It checked every scenario's score checksum against
+serial scoring. Producers block when the pending queue reaches capacity.
+
+Across three trials, 16 devices with a capacity of 16 ran at a median of
+165,831 windows/s with one worker and 191,946 windows/s with four.
+The median trial submit p95 stayed near 285 µs. With four workers and a
+capacity of 64, median throughput was 195,994 windows/s and submit p95 was
+289 µs. Submit timing includes time blocked for a queue slot.
+[Full worker trials](../reports/native-workers-m2.json)
+
+Ten C++ checks passed under AddressSanitizer and UndefinedBehaviorSanitizer.
+ThreadSanitizer ran each of the five queue and worker checks 20 times. The
+real ONNX workload passed both instrumented runs. Apple's `leaks` reported
+zero leaked bytes in that workload. The prebuilt ONNX library was outside
+the sanitizer build. This Apple toolchain rejected LeakSanitizer, so leak
+measurement used `leaks`.
+
+```sh
+.local/native/faultwatch-worker-bench artifacts/fd001-v1/model.onnx data/fd001/test_FD001.txt
+```

@@ -1,0 +1,324 @@
+{
+  "cpu": "Apple M2 Pro",
+  "runtime": "ONNX Runtime 1.32.0 CPU",
+  "onnx_intra_op_threads": 1,
+  "payload": "Repeat one official FD001 endpoint per simulated device",
+  "windows_per_device": 1000,
+  "checked_against_serial": true,
+  "trials": [
+    [
+      {
+        "devices": 1,
+        "workers": 1,
+        "queue_capacity": 16,
+        "windows": 1000,
+        "seconds": 0.004960375,
+        "windows_per_second": 201597.6615,
+        "submit_p95_us": 6.667,
+        "checksum": 167814.4531
+      },
+      {
+        "devices": 1,
+        "workers": 2,
+        "queue_capacity": 16,
+        "windows": 1000,
+        "seconds": 0.0038795,
+        "windows_per_second": 257765.1759,
+        "submit_p95_us": 9.708,
+        "checksum": 167814.4531
+      },
+      {
+        "devices": 1,
+        "workers": 4,
+        "queue_capacity": 16,
+        "windows": 1000,
+        "seconds": 0.00379375,
+        "windows_per_second": 263591.4333,
+        "submit_p95_us": 12.125,
+        "checksum": 167814.4531
+      },
+      {
+        "devices": 4,
+        "workers": 1,
+        "queue_capacity": 16,
+        "windows": 4000,
+        "seconds": 0.023879375,
+        "windows_per_second": 167508.5717,
+        "submit_p95_us": 69.458,
+        "checksum": 441675.9453
+      },
+      {
+        "devices": 4,
+        "workers": 2,
+        "queue_capacity": 16,
+        "windows": 4000,
+        "seconds": 0.020595417,
+        "windows_per_second": 194217.9661,
+        "submit_p95_us": 69.208,
+        "checksum": 441675.9453
+      },
+      {
+        "devices": 4,
+        "workers": 4,
+        "queue_capacity": 16,
+        "windows": 4000,
+        "seconds": 0.019031459,
+        "windows_per_second": 210178.3158,
+        "submit_p95_us": 68.625,
+        "checksum": 441675.9453
+      },
+      {
+        "devices": 16,
+        "workers": 1,
+        "queue_capacity": 16,
+        "windows": 16000,
+        "seconds": 0.096179375,
+        "windows_per_second": 166355.8325,
+        "submit_p95_us": 281.709,
+        "checksum": 1786181.976
+      },
+      {
+        "devices": 16,
+        "workers": 2,
+        "queue_capacity": 16,
+        "windows": 16000,
+        "seconds": 0.084551667,
+        "windows_per_second": 189233.4068,
+        "submit_p95_us": 292.333,
+        "checksum": 1786181.976
+      },
+      {
+        "devices": 16,
+        "workers": 4,
+        "queue_capacity": 16,
+        "windows": 16000,
+        "seconds": 0.079510875,
+        "windows_per_second": 201230.3348,
+        "submit_p95_us": 275.583,
+        "checksum": 1786181.976
+      },
+      {
+        "devices": 16,
+        "workers": 4,
+        "queue_capacity": 64,
+        "windows": 16000,
+        "seconds": 0.080054291,
+        "windows_per_second": 199864.3645,
+        "submit_p95_us": 274.542,
+        "checksum": 1786181.976
+      }
+    ],
+    [
+      {
+        "devices": 1,
+        "workers": 1,
+        "queue_capacity": 16,
+        "windows": 1000,
+        "seconds": 0.005059083,
+        "windows_per_second": 197664.2803,
+        "submit_p95_us": 10.25,
+        "checksum": 167814.4531
+      },
+      {
+        "devices": 1,
+        "workers": 2,
+        "queue_capacity": 16,
+        "windows": 1000,
+        "seconds": 0.004454917,
+        "windows_per_second": 224471.0732,
+        "submit_p95_us": 12.75,
+        "checksum": 167814.4531
+      },
+      {
+        "devices": 1,
+        "workers": 4,
+        "queue_capacity": 16,
+        "windows": 1000,
+        "seconds": 0.004578625,
+        "windows_per_second": 218406.1809,
+        "submit_p95_us": 15.625,
+        "checksum": 167814.4531
+      },
+      {
+        "devices": 4,
+        "workers": 1,
+        "queue_capacity": 16,
+        "windows": 4000,
+        "seconds": 0.023472291,
+        "windows_per_second": 170413.7018,
+        "submit_p95_us": 68.208,
+        "checksum": 441675.9453
+      },
+      {
+        "devices": 4,
+        "workers": 2,
+        "queue_capacity": 16,
+        "windows": 4000,
+        "seconds": 0.022369792,
+        "windows_per_second": 178812.5701,
+        "submit_p95_us": 70.417,
+        "checksum": 441675.9453
+      },
+      {
+        "devices": 4,
+        "workers": 4,
+        "queue_capacity": 16,
+        "windows": 4000,
+        "seconds": 0.019777125,
+        "windows_per_second": 202253.8665,
+        "submit_p95_us": 72.041,
+        "checksum": 441675.9453
+      },
+      {
+        "devices": 16,
+        "workers": 1,
+        "queue_capacity": 16,
+        "windows": 16000,
+        "seconds": 0.099174625,
+        "windows_per_second": 161331.5906,
+        "submit_p95_us": 297.917,
+        "checksum": 1786181.976
+      },
+      {
+        "devices": 16,
+        "workers": 2,
+        "queue_capacity": 16,
+        "windows": 16000,
+        "seconds": 0.089074625,
+        "windows_per_second": 179624.6686,
+        "submit_p95_us": 305.125,
+        "checksum": 1786181.976
+      },
+      {
+        "devices": 16,
+        "workers": 4,
+        "queue_capacity": 16,
+        "windows": 16000,
+        "seconds": 0.084173875,
+        "windows_per_second": 190082.7305,
+        "submit_p95_us": 294.125,
+        "checksum": 1786181.976
+      },
+      {
+        "devices": 16,
+        "workers": 4,
+        "queue_capacity": 64,
+        "windows": 16000,
+        "seconds": 0.081635625,
+        "windows_per_second": 195992.8646,
+        "submit_p95_us": 288.584,
+        "checksum": 1786181.976
+      }
+    ],
+    [
+      {
+        "devices": 1,
+        "workers": 1,
+        "queue_capacity": 16,
+        "windows": 1000,
+        "seconds": 0.005492875,
+        "windows_per_second": 182054.0245,
+        "submit_p95_us": 14.0,
+        "checksum": 167814.4531
+      },
+      {
+        "devices": 1,
+        "workers": 2,
+        "queue_capacity": 16,
+        "windows": 1000,
+        "seconds": 0.0048705,
+        "windows_per_second": 205317.7292,
+        "submit_p95_us": 16.042,
+        "checksum": 167814.4531
+      },
+      {
+        "devices": 1,
+        "workers": 4,
+        "queue_capacity": 16,
+        "windows": 1000,
+        "seconds": 0.004931209,
+        "windows_per_second": 202790.0257,
+        "submit_p95_us": 17.083,
+        "checksum": 167814.4531
+      },
+      {
+        "devices": 4,
+        "workers": 1,
+        "queue_capacity": 16,
+        "windows": 4000,
+        "seconds": 0.035602458,
+        "windows_per_second": 112351.7932,
+        "submit_p95_us": 100.375,
+        "checksum": 441675.9453
+      },
+      {
+        "devices": 4,
+        "workers": 2,
+        "queue_capacity": 16,
+        "windows": 4000,
+        "seconds": 0.023332583,
+        "windows_per_second": 171434.0843,
+        "submit_p95_us": 72.0,
+        "checksum": 441675.9453
+      },
+      {
+        "devices": 4,
+        "workers": 4,
+        "queue_capacity": 16,
+        "windows": 4000,
+        "seconds": 0.021113375,
+        "windows_per_second": 189453.3678,
+        "submit_p95_us": 76.792,
+        "checksum": 441675.9453
+      },
+      {
+        "devices": 16,
+        "workers": 1,
+        "queue_capacity": 16,
+        "windows": 16000,
+        "seconds": 0.0964835,
+        "windows_per_second": 165831.4634,
+        "submit_p95_us": 285.25,
+        "checksum": 1786181.976
+      },
+      {
+        "devices": 16,
+        "workers": 2,
+        "queue_capacity": 16,
+        "windows": 16000,
+        "seconds": 0.095173209,
+        "windows_per_second": 168114.5374,
+        "submit_p95_us": 302.125,
+        "checksum": 1786181.976
+      },
+      {
+        "devices": 16,
+        "workers": 4,
+        "queue_capacity": 16,
+        "windows": 16000,
+        "seconds": 0.08335675,
+        "windows_per_second": 191946.0632,
+        "submit_p95_us": 284.875,
+        "checksum": 1786181.976
+      },
+      {
+        "devices": 16,
+        "workers": 4,
+        "queue_capacity": 64,
+        "windows": 16000,
+        "seconds": 0.091990834,
+        "windows_per_second": 173930.3722,
+        "submit_p95_us": 317.041,
+        "checksum": 1786181.976
+      }
+    ]
+  ],
+  "validation": {
+    "googletest": 10,
+    "asan_ubsan_tests": 10,
+    "tsan_concurrency_tests": 5,
+    "tsan_repetitions_per_test": 20,
+    "sanitized_workload_rows": 10,
+    "apple_leaks_detected_bytes": 0
+  }
+}
