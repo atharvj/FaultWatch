@@ -1,0 +1,211 @@
+{
+  "ci_run": "https://github.com/atharvj/FaultWatch/actions/runs/45519522036",
+  "build": "Release",
+  "timing_samples": 15,
+  "runners": {
+    "aarch64": {
+      "cpu": "Neoverse-N2",
+      "googletest_count": 10,
+      "parity": {
+        "architecture": "aarch64",
+        "system": "Linux",
+        "native_onnxruntime": "1.32.0",
+        "python_onnxruntime": "1.32.0",
+        "telemetry_rows": 13096,
+        "held_out_windows": 11196,
+        "official_test_endpoints": 100,
+        "max_feature_difference": 3.637978807091713e-12,
+        "max_native_vs_python_onnx_cycles": 0.0,
+        "max_native_vs_pytorch_endpoint_cycles": 4.57763671875e-05,
+        "standalone_matches_binding": true,
+        "native_endpoint_mae_cycles": 18.747401185035706,
+        "native_endpoint_rmse_cycles": 25.389107841792445
+      },
+      "feature_microbenchmarks": [
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 0,
+          "kernel": "scalar",
+          "p50_ns_per_window": 355.463501,
+          "p95_ns_per_window": 363.2459717,
+          "windows_per_second": 2813228.355,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 0,
+          "kernel": "neon",
+          "p50_ns_per_window": 199.4278564,
+          "p95_ns_per_window": 200.3292236,
+          "windows_per_second": 5014344.625,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 8,
+          "kernel": "scalar",
+          "p50_ns_per_window": 355.4898682,
+          "p95_ns_per_window": 357.6032715,
+          "windows_per_second": 2813019.694,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 8,
+          "kernel": "neon",
+          "p50_ns_per_window": 199.5098877,
+          "p95_ns_per_window": 200.5587158,
+          "windows_per_second": 5012282.908,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 0,
+          "kernel": "scalar",
+          "p50_ns_per_window": 351.2299805,
+          "p95_ns_per_window": 351.5854492,
+          "windows_per_second": 2847137.362,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 0,
+          "kernel": "neon",
+          "p50_ns_per_window": 195.1474609,
+          "p95_ns_per_window": 196.3779297,
+          "windows_per_second": 5124330.059,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 8,
+          "kernel": "scalar",
+          "p50_ns_per_window": 351.190918,
+          "p95_ns_per_window": 352.9019775,
+          "windows_per_second": 2847454.045,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 8,
+          "kernel": "neon",
+          "p50_ns_per_window": 195.4003906,
+          "p95_ns_per_window": 197.2851562,
+          "windows_per_second": 5117697.036,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 0,
+          "kernel": "scalar",
+          "p50_ns_per_window": 353.2319336,
+          "p95_ns_per_window": 356.1138916,
+          "windows_per_second": 2831001.121,
+          "last_feature": 48.31358124
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 0,
+          "kernel": "neon",
+          "p50_ns_per_window": 196.5106201,
+          "p95_ns_per_window": 197.6700439,
+          "windows_per_second": 5088783.494,
+          "last_feature": 48.31358124
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 8,
+          "kernel": "scalar",
+          "p50_ns_per_window": 352.409668,
+          "p95_ns_per_window": 355.987915,
+          "windows_per_second": 2837606.601,
+          "last_feature": 48.31358124
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 8,
+          "kernel": "neon",
+          "p50_ns_per_window": 195.9821777,
+          "p95_ns_per_window": 196.5350342,
+          "windows_per_second": 5102504.787,
+          "last_feature": 48.31358124
+        }
+      ]
+    },
+    "x86_64": {
+      "cpu": "Intel(R) Xeon(R) 6975P-C",
+      "googletest_count": 10,
+      "parity": {
+        "architecture": "x86_64",
+        "system": "Linux",
+        "native_onnxruntime": "1.32.0",
+        "python_onnxruntime": "1.32.0",
+        "telemetry_rows": 13096,
+        "held_out_windows": 11196,
+        "official_test_endpoints": 100,
+        "max_feature_difference": 3.637978807091713e-12,
+        "max_native_vs_python_onnx_cycles": 0.0,
+        "max_native_vs_pytorch_endpoint_cycles": 3.0517578125e-05,
+        "standalone_matches_binding": true,
+        "native_endpoint_mae_cycles": 18.67091655731201,
+        "native_endpoint_rmse_cycles": 25.283661482468403
+      },
+      "feature_microbenchmarks": [
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 0,
+          "kernel": "scalar",
+          "p50_ns_per_window": 296.4472656,
+          "p95_ns_per_window": 307.6256104,
+          "windows_per_second": 3373281.241,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 1,
+          "buffer_offset_bytes": 8,
+          "kernel": "scalar",
+          "p50_ns_per_window": 295.3701172,
+          "p95_ns_per_window": 297.208252,
+          "windows_per_second": 3385582.839,
+          "last_feature": -46.79403854
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 0,
+          "kernel": "scalar",
+          "p50_ns_per_window": 289.9354248,
+          "p95_ns_per_window": 292.9379883,
+          "windows_per_second": 3449043.871,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 32,
+          "buffer_offset_bytes": 8,
+          "kernel": "scalar",
+          "p50_ns_per_window": 290.0090332,
+          "p95_ns_per_window": 291.2716064,
+          "windows_per_second": 3448168.455,
+          "last_feature": 43.33680956
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 0,
+          "kernel": "scalar",
+          "p50_ns_per_window": 308.0206299,
+          "p95_ns_per_window": 313.5024414,
+          "windows_per_second": 3246535.793,
+          "last_feature": 48.31358124
+        },
+        {
+          "batch": 1024,
+          "buffer_offset_bytes": 8,
+          "kernel": "scalar",
+          "p50_ns_per_window": 308.2701416,
+          "p95_ns_per_window": 311.6030273,
+          "windows_per_second": 3243908.07,
+          "last_feature": 48.31358124
+        }
+      ]
+    }
+  }
+}

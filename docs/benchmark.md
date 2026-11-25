@@ -217,7 +217,7 @@ serial scoring. Producers block when the pending queue reaches capacity.
 Across three trials, 16 devices with a capacity of 16 ran at a median of
 165,831 windows/s with one worker and 191,946 windows/s with four.
 The median trial submit p95 stayed near 285 µs. With four workers and a
-capacity of 64, median throughput was 195,994 windows/s and submit p95 was
+capacity of 64, median throughput was 195,993 windows/s and submit p95 was
 289 µs. Submit timing includes time blocked for a queue slot.
 [Full worker trials](../reports/native-workers-m2.json)
 
@@ -231,3 +231,13 @@ measurement used `leaks`.
 ```sh
 .local/native/faultwatch-worker-bench artifacts/fd001-v1/model.onnx data/fd001/test_FD001.txt
 ```
+
+## Native Linux runners
+
+Linux ARM64 (Neoverse-N2) and x86-64 (Xeon 6975P-C) both ran all ten
+GoogleTests, 11,196 held-out cases and the worker workload. Both matched
+Python ONNX Runtime exactly. In these separate CI environments, batch-one
+feature p50 was 355 ns scalar and 199 ns NEON on the ARM runner, and
+296 ns scalar on the x86-64 runner. Treat these as runner-specific
+measurements. The pinned native package is configured for macOS ARM64,
+Linux ARM64 and Linux x86-64. [Runner measurements](../reports/native-linux-ci.json)
