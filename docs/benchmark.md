@@ -254,3 +254,32 @@ the affected packages. The Linux ARM64 image scan found zero secrets
 and zero high or critical findings with an available fix. It also
 reported 101 high or critical findings without a fix.
 [Verification summary](../reports/reliability-checks.json)
+
+## Native HTTP serving
+
+On the M2 Pro, both FastAPI backends used the same checked ONNX graph,
+ONNX Runtime 1.32.0 with two intra-op threads, and a local PostgreSQL
+instance with FD001 engines 1–3 loaded. Eight clients sent 60% prediction,
+20% history and 20% engine-list requests. The four 20-second trials ran
+Python ONNX, C++, C++, then Python ONNX. Redis, auth, rate limiting and
+trace export were disabled for all four trials.
+
+| Backend | Mean trial prediction p95 | Mean throughput | Mean post-trial API RSS |
+|---|---:|---:|---:|
+| Python ONNX | 29.34 ms | 434 requests/s | 306 MiB |
+| C++ ONNX | 17.67 ms | 783 requests/s | 302 MiB |
+
+All 48,718 requests succeeded. The three preflight predictions matched
+exactly in every trial. Prediction p95 fell 39.8% and throughput rose 80.5%
+in this workload. The comparison includes Python feature preparation,
+the native binding, and database and HTTP work. The feature microbenchmark
+above isolates the NEON change. Process RSS overlapped across trials.
+[Raw trials](../reports/native-http-m2.json)
+
+Build the native module, export the model, start the local dashboard and
+run `make replay` to populate PostgreSQL. Use the command below to repeat
+the comparison.
+
+```sh
+PYTHONPATH=.local/native/python .venv/bin/python scripts/benchmark_native_http.py
+```

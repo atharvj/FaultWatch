@@ -1,0 +1,289 @@
+{
+  "platform": "macOS-27.2.1-arm64-arm-64bit",
+  "architecture": "arm64",
+  "redis_enabled": false,
+  "onnx_threads": 2,
+  "max_score_drift_cycles": 0.0,
+  "trials": [
+    {
+      "backend": "onnx",
+      "rss_mib_after_trial": 303.265625,
+      "preflight_predictions": [
+        {
+          "engine_id": 1,
+          "cycle": 31,
+          "status": "ready",
+          "available_cycles": 20,
+          "required_cycles": 20,
+          "predicted_rul_cycles": 167.814453125,
+          "model_version": "fd001-v1"
+        },
+        {
+          "engine_id": 2,
+          "cycle": 49,
+          "status": "ready",
+          "available_cycles": 20,
+          "required_cycles": 20,
+          "predicted_rul_cycles": 136.0636749267578,
+          "model_version": "fd001-v1"
+        },
+        {
+          "engine_id": 3,
+          "cycle": 126,
+          "status": "ready",
+          "available_cycles": 20,
+          "required_cycles": 20,
+          "predicted_rul_cycles": 51.607479095458984,
+          "model_version": "fd001-v1"
+        }
+      ],
+      "workers": 8,
+      "target_seconds": 20,
+      "elapsed_seconds": 20.016,
+      "total": {
+        "requests": 8448,
+        "errors": 0,
+        "error_rate": 0.0,
+        "requests_per_second": 422.06,
+        "p50_ms": 17.545,
+        "p95_ms": 29.38
+      },
+      "routes": {
+        "/v1/engines/{engine}/prediction": {
+          "requests": 5071,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 253.35,
+          "p50_ms": 18.737,
+          "p95_ms": 30.507
+        },
+        "/v1/engines/{engine}/history?limit=20": {
+          "requests": 1688,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 84.33,
+          "p50_ms": 15.863,
+          "p95_ms": 27.76
+        },
+        "/v1/engines": {
+          "requests": 1689,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 84.38,
+          "p50_ms": 15.225,
+          "p95_ms": 26.139
+        }
+      }
+    },
+    {
+      "backend": "native",
+      "rss_mib_after_trial": 288.1875,
+      "preflight_predictions": [
+        {
+          "engine_id": 1,
+          "cycle": 31,
+          "status": "ready",
+          "available_cycles": 20,
+          "required_cycles": 20,
+          "predicted_rul_cycles": 167.814453125,
+          "model_version": "fd001-v1"
+        },
+        {
+          "engine_id": 2,
+          "cycle": 49,
+          "status": "ready",
+          "available_cycles": 20,
+          "required_cycles": 20,
+          "predicted_rul_cycles": 136.0636749267578,
+          "model_version": "fd001-v1"
+        },
+        {
+          "engine_id": 3,
+          "cycle": 126,
+          "status": "ready",
+          "available_cycles": 20,
+          "required_cycles": 20,
+          "predicted_rul_cycles": 51.607479095458984,
+          "model_version": "fd001-v1"
+        }
+      ],
+      "workers": 8,
+      "target_seconds": 20,
+      "elapsed_seconds": 20.006,
+      "total": {
+        "requests": 15285,
+        "errors": 0,
+        "error_rate": 0.0,
+        "requests_per_second": 764.01,
+        "p50_ms": 8.935,
+        "p95_ms": 18.027
+      },
+      "routes": {
+        "/v1/engines/{engine}/prediction": {
+          "requests": 9172,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 458.46,
+          "p50_ms": 9.07,
+          "p95_ms": 18.175
+        },
+        "/v1/engines/{engine}/history?limit=20": {
+          "requests": 3058,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 152.85,
+          "p50_ms": 8.87,
+          "p95_ms": 18.216
+        },
+        "/v1/engines": {
+          "requests": 3055,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 152.7,
+          "p50_ms": 8.582,
+          "p95_ms": 17.307
+        }
+      }
+    },
+    {
+      "backend": "native",
+      "rss_mib_after_trial": 316.0,
+      "preflight_predictions": [
+        {
+          "engine_id": 1,
+          "cycle": 31,
+          "status": "ready",
+          "available_cycles": 20,
+          "required_cycles": 20,
+          "predicted_rul_cycles": 167.814453125,
+          "model_version": "fd001-v1"
+        },
+        {
+          "engine_id": 2,
+          "cycle": 49,
+          "status": "ready",
+          "available_cycles": 20,
+          "required_cycles": 20,
+          "predicted_rul_cycles": 136.0636749267578,
+          "model_version": "fd001-v1"
+        },
+        {
+          "engine_id": 3,
+          "cycle": 126,
+          "status": "ready",
+          "available_cycles": 20,
+          "required_cycles": 20,
+          "predicted_rul_cycles": 51.607479095458984,
+          "model_version": "fd001-v1"
+        }
+      ],
+      "workers": 8,
+      "target_seconds": 20,
+      "elapsed_seconds": 20.063,
+      "total": {
+        "requests": 16076,
+        "errors": 0,
+        "error_rate": 0.0,
+        "requests_per_second": 801.26,
+        "p50_ms": 8.755,
+        "p95_ms": 16.909
+      },
+      "routes": {
+        "/v1/engines/{engine}/prediction": {
+          "requests": 9648,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 480.88,
+          "p50_ms": 8.882,
+          "p95_ms": 17.155
+        },
+        "/v1/engines/{engine}/history?limit=20": {
+          "requests": 3214,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 160.19,
+          "p50_ms": 8.735,
+          "p95_ms": 16.628
+        },
+        "/v1/engines": {
+          "requests": 3214,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 160.19,
+          "p50_ms": 8.402,
+          "p95_ms": 16.424
+        }
+      }
+    },
+    {
+      "backend": "onnx",
+      "rss_mib_after_trial": 308.546875,
+      "preflight_predictions": [
+        {
+          "engine_id": 1,
+          "cycle": 31,
+          "status": "ready",
+          "available_cycles": 20,
+          "required_cycles": 20,
+          "predicted_rul_cycles": 167.814453125,
+          "model_version": "fd001-v1"
+        },
+        {
+          "engine_id": 2,
+          "cycle": 49,
+          "status": "ready",
+          "available_cycles": 20,
+          "required_cycles": 20,
+          "predicted_rul_cycles": 136.0636749267578,
+          "model_version": "fd001-v1"
+        },
+        {
+          "engine_id": 3,
+          "cycle": 126,
+          "status": "ready",
+          "available_cycles": 20,
+          "required_cycles": 20,
+          "predicted_rul_cycles": 51.607479095458984,
+          "model_version": "fd001-v1"
+        }
+      ],
+      "workers": 8,
+      "target_seconds": 20,
+      "elapsed_seconds": 20.012,
+      "total": {
+        "requests": 8909,
+        "errors": 0,
+        "error_rate": 0.0,
+        "requests_per_second": 445.18,
+        "p50_ms": 17.207,
+        "p95_ms": 26.932
+      },
+      "routes": {
+        "/v1/engines/{engine}/prediction": {
+          "requests": 5345,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 267.09,
+          "p50_ms": 18.354,
+          "p95_ms": 28.182
+        },
+        "/v1/engines/{engine}/history?limit=20": {
+          "requests": 1782,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 89.05,
+          "p50_ms": 15.679,
+          "p95_ms": 25.054
+        },
+        "/v1/engines": {
+          "requests": 1782,
+          "errors": 0,
+          "error_rate": 0.0,
+          "requests_per_second": 89.05,
+          "p50_ms": 15.031,
+          "p95_ms": 24.652
+        }
+      }
+    }
+  ]
+}

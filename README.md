@@ -18,17 +18,19 @@ predictions update, and Grafana track the running service.
 flowchart TD
     Data["NASA C-MAPSS FD001"] --> Replay["Telemetry replay"]
     Data --> Train["Train and export the model"]
-    Train --> Inference["20-cycle features and scoring"]
-    Replay -->|HTTP ingest| API["FastAPI"]
+    Train --> Bundle["Versioned model bundle"]
+    Bundle --> Inference["Python or C++ scoring"]
+    Replay -->|HTTP ingest| API["FastAPI with optional JWT"]
     Replay -.-> Kafka["Kafka"]
     Kafka --> Consumer["Replay consumer"]
     Consumer -->|Store readings| DB[("PostgreSQL")]
     API <-->|Store and query readings| DB
     Dashboard["Browser dashboard"] <-->|History and predictions| API
-    API --> Inference
+    API -->|20 consecutive cycles| Inference
     API -.-> Cache[("Redis")]
     API -->|"/metrics"| Prometheus
     Prometheus --> Grafana
+    API -.-> OTLP["OpenTelemetry"]
 ```
 
 ## Run it
@@ -160,7 +162,9 @@ PYTHONPATH=.local/native/python FAULTWATCH_BACKEND=native \
   .venv/bin/uvicorn faultwatch.api:create_app --factory --port 8001
 ```
 
-[Held-out parity results](reports/native-parity.json)
+[Held-out parity results](reports/native-parity.json) ·
+[Native tests on Linux ARM64 and x86-64](reports/native-linux-ci.json) ·
+[HTTP benchmark](docs/benchmark.md#native-http-serving)
 
 ## Artifact storage
 
